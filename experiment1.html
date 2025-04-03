@@ -1,0 +1,576 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>Интерактивная химическая лаборатория - Фараонова змея</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/aframe/1.4.2/aframe.min.js"></script>
+    <script>
+      // Компонент для создания и анимации "Фараоновой змеи"
+      AFRAME.registerComponent("pharaoh-snake", {
+        schema: {
+          active: { default: false },
+        },
+
+        init: function () {
+          this.segments = [];
+          this.totalSegments = 40;
+          this.growthSpeed = 0.15;
+          this.growthTimer = 0;
+          this.currentSegment = 0;
+          this.isGrowing = false;
+        },
+
+        update: function () {
+          if (this.data.active && !this.isGrowing) {
+            this.startReaction();
+          }
+        },
+
+        startReaction: function () {
+          this.isGrowing = true;
+
+          // Добавляем эффект огня в начале
+          const fire = document.createElement("a-entity");
+          fire.setAttribute("position", "0 0.02 0");
+          fire.setAttribute("particle-system", {
+            color: "#ff8822, #ffaa22, #ff4400",
+            size: 0.2,
+            maxAge: 0.5,
+            velocityValue: "0 0.5 0",
+            velocitySpread: "0.2 0.2 0.2",
+            acceleration: "0 0 0",
+            particleCount: 20,
+            texture:
+              "https://cdn.glitch.com/a69681d6-2900-4edc-87e6-caee8d96c7a9%2Fparticle.png?1534378095877",
+          });
+          this.el.appendChild(fire);
+
+          // Запускаем создание сегментов "змеи"
+          this.growthInterval = setInterval(() => this.growSnake(), 100);
+        },
+
+        growSnake: function () {
+          if (this.currentSegment >= this.totalSegments) {
+            clearInterval(this.growthInterval);
+            return;
+          }
+
+          // Создаем новый сегмент "змеи"
+          const segmentHeight = 0.05 + Math.random() * 0.05;
+          const topRadius = 0.05 + Math.random() * 0.03;
+          const bottomRadius = 0.05 + Math.random() * 0.03;
+
+          const segment = document.createElement("a-entity");
+          segment.setAttribute("geometry", {
+            primitive: "cylinder",
+            height: segmentHeight,
+            radius: topRadius,
+            "segments-radial": 16,
+          });
+          segment.setAttribute("material", {
+            color: "#333333",
+            roughness: 0.7,
+            metalness: 0.2,
+          });
+
+          // Определяем позицию нового сегмента
+          let yPos = 0.02;
+          let lastPos = { x: 0, y: 0.02, z: 0 };
+
+          if (this.segments.length > 0) {
+            const lastSegment = this.segments[this.segments.length - 1];
+            const lastPosition = lastSegment.getAttribute("position");
+            const lastGeometry = lastSegment.getAttribute("geometry");
+            yPos = lastPosition.y + lastGeometry.height / 2 + segmentHeight / 2;
+            lastPos = lastPosition;
+          }
+
+          // Добавляем случайное смещение для извилистости
+          const xOffset = (Math.random() - 0.5) * 0.02;
+          const zOffset = (Math.random() - 0.5) * 0.02;
+
+          segment.setAttribute("position", {
+            x: lastPos.x + xOffset,
+            y: yPos,
+            z: lastPos.z + zOffset,
+          });
+
+          // Добавляем небольшой случайный наклон
+          segment.setAttribute("rotation", {
+            x: (Math.random() - 0.5) * 10,
+            y: 0,
+            z: (Math.random() - 0.5) * 10,
+          });
+
+          this.el.appendChild(segment);
+          this.segments.push(segment);
+          this.currentSegment++;
+
+          // Добавляем эффект дыма
+          if (this.currentSegment % 3 === 0) {
+            this.addSmoke(lastPos.x + xOffset, yPos, lastPos.z + zOffset);
+          }
+        },
+
+        addSmoke: function (x, y, z) {
+          const smoke = document.createElement("a-entity");
+          smoke.setAttribute("position", `${x} ${y} ${z}`);
+          smoke.setAttribute("particle-system", {
+            color: "#aaaaaa, #888888",
+            size: 0.3,
+            maxAge: 1.5,
+            velocityValue: "0 0.3 0",
+            velocitySpread: "0.1 0.1 0.1",
+            acceleration: "0 0 0",
+            particleCount: 5,
+            opacity: 0.5,
+            texture:
+              "https://cdn.glitch.com/a69681d6-2900-4edc-87e6-caee8d96c7a9%2Fparticle.png?1534378095877",
+          });
+          this.el.appendChild(smoke);
+
+          // Удаляем дым через некоторое время для оптимизации
+          setTimeout(() => {
+            if (smoke.parentNode) {
+              smoke.parentNode.removeChild(smoke);
+            }
+          }, 3000);
+        },
+
+        remove: function () {
+          clearInterval(this.growthInterval);
+        },
+      });
+    </script>
+    <style>
+      body {
+        margin: 0;
+        font-family: Arial, sans-serif;
+        overflow: hidden;
+      }
+
+      .ui-container {
+        position: absolute;
+        bottom: 20px;
+        left: 0;
+        right: 0;
+        display: flex;
+        justify-content: center;
+        z-index: 100;
+      }
+
+      .ui-button {
+        background-color: #4285f4;
+        color: white;
+        border: none;
+        padding: 12px 24px;
+        font-size: 16px;
+        border-radius: 4px;
+        cursor: pointer;
+        transition: background-color 0.3s;
+        margin: 0 10px;
+      }
+
+      .ui-button:hover {
+        background-color: #3b77db;
+      }
+
+      .info-panel {
+        position: absolute;
+        top: 20px;
+        left: 20px;
+        background: rgba(0, 0, 0, 0.7);
+        color: white;
+        padding: 15px;
+        border-radius: 8px;
+        max-width: 350px;
+        z-index: 100;
+      }
+
+      .info-panel h2 {
+        margin-top: 0;
+      }
+
+      .info-panel p {
+        margin-bottom: 10px;
+      }
+
+      .instructions-panel {
+        position: absolute;
+        bottom: 80px;
+        left: 20px;
+        background: rgba(0, 0, 0, 0.7);
+        color: white;
+        padding: 15px;
+        border-radius: 8px;
+        max-width: 350px;
+        z-index: 100;
+      }
+
+      .instructions-panel h3 {
+        margin-top: 0;
+        color: #4285f4;
+      }
+
+      .instructions-panel p {
+        margin-bottom: 5px;
+      }
+
+      .ui-controls {
+        position: absolute;
+        left: 50%;
+        transform: translateX(-50%);
+        bottom: 20px;
+        background: rgba(0, 0, 0, 0.7);
+        color: white;
+        padding: 15px;
+        border-radius: 8px;
+        z-index: 100;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        width: 300px;
+      }
+
+      .control-button {
+        background-color: #4285f4;
+        color: white;
+        border: none;
+        padding: 12px;
+        font-size: 16px;
+        border-radius: 4px;
+        cursor: pointer;
+        transition: background-color 0.3s;
+      }
+
+      .control-button:hover {
+        background-color: #3b77db;
+      }
+
+      .control-button:disabled {
+        background-color: #cccccc;
+        cursor: not-allowed;
+      }
+
+      .reaction-progress {
+        position: absolute;
+        top: 20px;
+        right: 20px;
+        background: rgba(0, 0, 0, 0.7);
+        color: white;
+        padding: 15px;
+        border-radius: 8px;
+        z-index: 100;
+        max-width: 250px;
+      }
+
+      .reaction-progress h3 {
+        margin-top: 0;
+        color: #4285f4;
+      }
+
+      .progress-container {
+        width: 100%;
+        height: 20px;
+        background-color: #333;
+        border-radius: 10px;
+        margin-top: 10px;
+      }
+
+      .progress-bar {
+        height: 100%;
+        background-color: #4285f4;
+        border-radius: 10px;
+        width: 0%;
+        transition: width 0.5s;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="info-panel">
+      <h2>Фараонова змея</h2>
+      <p>
+        Классический химический эксперимент, в котором при поджигании роданида
+        ртути (II) (Hg(SCN)₂) происходит экзотермическая реакция разложения с
+        образованием пористой массы похожей на змею.
+      </p>
+      <p>Реакция: 2Hg(SCN)₂ → 2HgS + CS₂ + C₃N₄</p>
+      <p>
+        ВНИМАНИЕ: В реальной лаборатории это опасный эксперимент, так как
+        соединения ртути токсичны, а во время реакции выделяются ядовитые газы!
+      </p>
+    </div>
+
+    <div class="instructions-panel">
+      <h3 id="current-step">Шаг 1</h3>
+      <p id="step-description">
+        Переместите роданид ртути (II) на керамическую тарелку
+      </p>
+    </div>
+
+    <div class="reaction-progress" style="display: none">
+      <h3>Прогресс реакции</h3>
+      <div class="progress-container">
+        <div id="reaction-progress-bar" class="progress-bar"></div>
+      </div>
+    </div>
+
+    <div class="ui-controls">
+      <button id="place-powder" class="control-button">
+        Переместить роданид ртути на тарелку
+      </button>
+      <button id="ignite-powder" class="control-button" disabled>
+        Поджечь роданид ртути
+      </button>
+      <button id="reset-experiment" class="control-button" disabled>
+        Сбросить эксперимент
+      </button>
+    </div>
+
+    <a-scene>
+      <!-- Базовая среда -->
+      <a-sky color="#87CEEB"></a-sky>
+      <a-plane
+        position="0 -0.5 0"
+        rotation="-90 0 0"
+        width="10"
+        height="10"
+        color="#8B4513"
+      ></a-plane>
+
+      <!-- Лабораторный стол -->
+      <a-box
+        position="0 -0.3 -0.5"
+        width="1.2"
+        height="0.1"
+        depth="0.8"
+        color="#7A5C3D"
+      ></a-box>
+
+      <!-- Керамическая подложка для эксперимента -->
+      <a-cylinder
+        position="0 -0.24 -0.5"
+        radius="0.15"
+        height="0.02"
+        color="#dddddd"
+        shadow
+      ></a-cylinder>
+
+      <!-- Роданид ртути (порошок) - изначально расположен отдельно -->
+      <a-cylinder
+        id="mercury-thiocyanate"
+        position="0.4 -0.24 -0.3"
+        radius="0.03"
+        height="0.02"
+        color="#DDB373"
+        shadow
+      >
+        <a-text
+          value="Hg(SCN)₂"
+          position="0 0.05 0"
+          scale="0.1 0.1 0.1"
+          align="center"
+          color="#000000"
+        >
+        </a-text>
+      </a-cylinder>
+
+      <!-- Зажигалка -->
+      <a-box
+        id="lighter"
+        position="-0.4 -0.24 -0.3"
+        width="0.03"
+        height="0.08"
+        depth="0.02"
+        color="#333333"
+      >
+        <a-box
+          position="0 0.045 0"
+          width="0.02"
+          height="0.01"
+          depth="0.01"
+          color="#666666"
+        >
+        </a-box>
+      </a-box>
+
+      <!-- Сущность для "Фараоновой змеи" -->
+      <a-entity
+        id="snake-entity"
+        position="0 -0.23 -0.5"
+        pharaoh-snake="active: false"
+      ></a-entity>
+
+      <!-- Освещение -->
+      <a-light type="ambient" color="#bbbbbb"></a-light>
+      <a-light type="directional" position="1 1 1" intensity="0.6"></a-light>
+      <a-light
+        type="spot"
+        position="0 1.5 -1"
+        intensity="0.8"
+        angle="45"
+      ></a-light>
+
+      <!-- Камера -->
+      <a-entity position="0 0.1 0.5">
+        <a-camera look-controls wasd-controls></a-camera>
+      </a-entity>
+    </a-scene>
+
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        // Получаем ссылки на элементы интерфейса
+        const placePowderButton = document.getElementById("place-powder");
+        const ignitePowderButton = document.getElementById("ignite-powder");
+        const resetExperimentButton =
+          document.getElementById("reset-experiment");
+        const stepTitle = document.getElementById("current-step");
+        const stepDescription = document.getElementById("step-description");
+        const reactionProgress = document.querySelector(".reaction-progress");
+        const progressBar = document.getElementById("reaction-progress-bar");
+
+        // Получаем ссылки на 3D объекты
+        const mercuryThiocyanate = document.getElementById(
+          "mercury-thiocyanate"
+        );
+        const lighter = document.getElementById("lighter");
+        const snakeEntity = document.getElementById("snake-entity");
+
+        // Флаги состояния эксперимента
+        let powderPlaced = false;
+        let reactionStarted = false;
+        let reactionCompleted = false;
+
+        // Функция для перемещения порошка на тарелку
+        placePowderButton.addEventListener("click", function () {
+          // Анимируем перемещение порошка
+          mercuryThiocyanate.setAttribute("animation", {
+            property: "position",
+            to: "0 -0.24 -0.5",
+            dur: 1000,
+            easing: "easeOutQuad",
+          });
+
+          // Обновляем состояние
+          powderPlaced = true;
+          placePowderButton.disabled = true;
+          ignitePowderButton.disabled = false;
+
+          // Обновляем инструкции
+          stepTitle.textContent = "Шаг 2";
+          stepDescription.textContent = "Поджгите роданид ртути";
+        });
+
+        // Функция для поджигания порошка
+        ignitePowderButton.addEventListener("click", function () {
+          // Анимируем перемещение зажигалки к порошку
+          lighter.setAttribute("animation", {
+            property: "position",
+            to: "0 -0.14 -0.5",
+            dur: 1000,
+            easing: "easeOutQuad",
+          });
+
+          // Добавляем пламя к зажигалке
+          const flame = document.createElement("a-entity");
+          flame.setAttribute("id", "lighter-flame");
+          flame.setAttribute("position", "0 0.05 0");
+          flame.setAttribute("geometry", {
+            primitive: "cone",
+            height: 0.05,
+            radiusBottom: 0.01,
+            radiusTop: 0.001,
+          });
+          flame.setAttribute("material", {
+            color: "#ff7700",
+            emissive: "#ff5500",
+            emissiveIntensity: 2,
+          });
+          lighter.appendChild(flame);
+
+          // После анимации зажигаем порошок
+          setTimeout(function () {
+            // Активируем реакцию
+            snakeEntity.setAttribute("pharaoh-snake", "active", true);
+
+            // Возвращаем зажигалку на место
+            lighter.setAttribute("animation", {
+              property: "position",
+              to: "-0.4 -0.24 -0.3",
+              dur: 1000,
+              easing: "easeOutQuad",
+            });
+
+            // Через секунду убираем пламя
+            setTimeout(function () {
+              const flame = document.getElementById("lighter-flame");
+              if (flame && flame.parentNode) {
+                flame.parentNode.removeChild(flame);
+              }
+            }, 1000);
+
+            // Обновляем состояние
+            reactionStarted = true;
+            ignitePowderButton.disabled = true;
+            resetExperimentButton.disabled = false;
+
+            // Обновляем инструкции
+            stepTitle.textContent = "Шаг 3";
+            stepDescription.textContent =
+              "Наблюдайте за реакцией разложения. После завершения нажмите 'Сбросить эксперимент' для повторения";
+
+            // Показываем прогресс реакции
+            reactionProgress.style.display = "block";
+
+            // Анимируем прогресс реакции
+            let progress = 0;
+            const progressInterval = setInterval(function () {
+              progress += 2.5;
+              progressBar.style.width = progress + "%";
+
+              if (progress >= 100) {
+                clearInterval(progressInterval);
+                reactionCompleted = true;
+              }
+            }, 1000); // Полная анимация займет около 40 секунд
+          }, 1000);
+        });
+
+        // Функция для сброса эксперимента
+        resetExperimentButton.addEventListener("click", function () {
+          // Удаляем все сегменты "змеи"
+          while (snakeEntity.firstChild) {
+            snakeEntity.removeChild(snakeEntity.firstChild);
+          }
+
+          // Сбрасываем позицию порошка
+          mercuryThiocyanate.setAttribute("animation", {
+            property: "position",
+            to: "0.4 -0.24 -0.3",
+            dur: 1000,
+            easing: "easeOutQuad",
+          });
+
+          // Сбрасываем состояние
+          powderPlaced = false;
+          reactionStarted = false;
+          reactionCompleted = false;
+
+          // Сбрасываем интерфейс
+          placePowderButton.disabled = false;
+          ignitePowderButton.disabled = true;
+          resetExperimentButton.disabled = true;
+
+          // Сбрасываем прогресс
+          reactionProgress.style.display = "none";
+          progressBar.style.width = "0%";
+
+          // Обновляем инструкции
+          stepTitle.textContent = "Шаг 1";
+          stepDescription.textContent =
+            "Переместите роданид ртути (II) на керамическую тарелку";
+        });
+      });
+    </script>
+  </body>
+</html>

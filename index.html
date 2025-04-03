@@ -1,567 +1,638 @@
 <!DOCTYPE html>
 <html lang="ru">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <meta name="description" content="ChemEdu VR - Виртуальная химическая лаборатория для увлекательного изучения химии">
-  <meta name="theme-color" content="#1a3c6e">
-  <title>ChemEdu VR - Виртуальная химическая лаборатория</title>
-  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
-    
-    body {
-      font-family: 'Montserrat', sans-serif;
-      background-color: #f5f7fa;
-      color: #333;
-      overflow-x: hidden;
-    }
-    
-    /* Navbar Styles */
-    .navbar {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      background-color: rgba(255, 255, 255, 0.9);
-      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-      z-index: 1000;
-      backdrop-filter: blur(5px);
-    }
-    
-    .navbar-container {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 1rem 5%;
-      max-width: 1400px;
-      margin: 0 auto;
-    }
-    
-    .logo {
-      display: flex;
-      align-items: center;
-      font-size: 1.8rem;
-      font-weight: 700;
-      color: #1a3c6e;
-    }
-    
-    .logo span {
-      color: #2563eb;
-    }
-    
-    .nav-links {
-      display: flex;
-      gap: 2rem;
-    }
-    
-    .nav-link {
-      color: #1a3c6e;
-      text-decoration: none;
-      font-weight: 500;
-      font-size: 1.1rem;
-      position: relative;
-      transition: all 0.3s ease;
-    }
-    
-    .nav-link:hover {
-      color: #2563eb;
-    }
-    
-    .nav-link::after {
-      content: '';
-      position: absolute;
-      width: 0;
-      height: 2px;
-      bottom: -5px;
-      left: 0;
-      background-color: #2563eb;
-      transition: width 0.3s ease;
-    }
-    
-    .nav-link:hover::after {
-      width: 100%;
-    }
-    
-    .active {
-      color: #2563eb;
-    }
-    
-    .active::after {
-      width: 100%;
-    }
-    
-    /* Hero Section */
-    .hero {
-      position: relative;
-      height: 100vh;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-      padding: 2rem;
-      text-align: center;
-      overflow: hidden;
-    }
-    
-    .hero-bg {
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background-image: url('images/background.png');
-      background-size: cover;
-      background-position: center;
-      z-index: -2;
-    }
-    
-    .hero-overlay {
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background-color: rgba(0, 0, 0, 0.5);
-      z-index: -1;
-    }
-    
-    .hero-content {
-      max-width: 800px;
-      color: white;
-      position: relative;
-      z-index: 1;
-    }
-    
-    .hero-title {
-      font-size: 3.5rem;
-      margin-bottom: 1rem;
-      font-weight: 700;
-      text-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
-    }
-    
-    .hero-subtitle {
-      font-size: 1.5rem;
-      margin-bottom: 2rem;
-      font-weight: 400;
-      text-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
-    }
-    
-    /* Molecules Animation */
-    .molecules-container {
-      position: absolute;
-      width: 100%;
-      height: 100%;
-      overflow: hidden;
-      z-index: -1;
-    }
-    
-    .molecule {
-      position: absolute;
-      width: 60px;
-      height: 60px;
-      background-color: rgba(255, 255, 255, 0.1);
-      border-radius: 50%;
-      animation: float 15s infinite linear;
-    }
-    
-    .molecule::before,
-    .molecule::after {
-      content: '';
-      position: absolute;
-      background-color: rgba(255, 255, 255, 0.1);
-      border-radius: 50%;
-    }
-    
-    .molecule::before {
-      width: 30px;
-      height: 30px;
-      top: -15px;
-      left: 15px;
-    }
-    
-    .molecule::after {
-      width: 20px;
-      height: 20px;
-      bottom: -10px;
-      right: 5px;
-    }
-    
-    @keyframes float {
-      0% {
-        transform: translate(0, 0) rotate(0deg);
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
+    />
+    <meta
+      name="description"
+      content="ChemEdu VR - Виртуальная химическая лаборатория для увлекательного изучения химии"
+    />
+    <meta name="theme-color" content="#1a3c6e" />
+    <title>ChemEdu VR - Virtuālā ķīmijas laboratorija</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
       }
-      25% {
-        transform: translate(100px, 50px) rotate(90deg);
+
+      body {
+        font-family: "Montserrat", sans-serif;
+        background-color: #f5f7fa;
+        color: #333;
+        overflow-x: hidden;
       }
-      50% {
-        transform: translate(200px, 0) rotate(180deg);
+
+      /* Navbar Styles */
+      .navbar {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        background-color: rgba(255, 255, 255, 0.9);
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        z-index: 1000;
+        backdrop-filter: blur(5px);
       }
-      75% {
-        transform: translate(100px, -50px) rotate(270deg);
-      }
-      100% {
-        transform: translate(0, 0) rotate(360deg);
-      }
-    }
-    
-    /* Lessons Section */
-    .lessons-section {
-      padding: 5rem 2rem;
-      position: relative;
-    }
-    
-    .section-title {
-      text-align: center;
-      font-size: 2.5rem;
-      margin-bottom: 3rem;
-      color: #1a3c6e;
-    }
-    
-    .lessons-container {
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: center;
-      gap: 2rem;
-      max-width: 1200px;
-      margin: 0 auto;
-    }
-    
-    .lesson-card {
-      width: 330px;
-      background-color: white;
-      border-radius: 12px;
-      overflow: hidden;
-      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
-      transition: transform 0.3s ease, box-shadow 0.3s ease;
-      position: relative;
-      cursor: pointer;
-    }
-    
-    .lesson-card:hover {
-      transform: translateY(-10px);
-      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
-    }
-    
-    .lesson-card-img {
-      width: 100%;
-      height: 200px;
-      object-fit: cover;
-    }
-    
-    .lesson-card-content {
-      padding: 1.5rem;
-    }
-    
-    .lesson-title {
-      font-size: 1.5rem;
-      margin-bottom: 0.75rem;
-      color: #1a3c6e;
-    }
-    
-    .lesson-description {
-      font-size: 0.95rem;
-      line-height: 1.5;
-      color: #4b5563;
-      margin-bottom: 1.5rem;
-    }
-    
-    .lesson-button {
-      display: inline-block;
-      background-color: #2563eb;
-      color: white;
-      font-weight: 500;
-      padding: 0.75rem 1.5rem;
-      border-radius: 6px;
-      text-decoration: none;
-      transition: background-color 0.3s ease;
-    }
-    
-    .lesson-button:hover {
-      background-color: #1d4ed8;
-    }
-    
-    /* Footer */
-    .footer {
-      background-color: #1a3c6e;
-      color: white;
-      padding: 3rem 2rem;
-      text-align: center;
-    }
-    
-    .footer-content {
-      max-width: 800px;
-      margin: 0 auto;
-    }
-    
-    .footer-logo {
-      font-size: 2rem;
-      font-weight: 700;
-      margin-bottom: 1rem;
-    }
-    
-    .footer-text {
-      margin-bottom: 2rem;
-      line-height: 1.6;
-    }
-    
-    .footer-links {
-      display: flex;
-      justify-content: center;
-      gap: 2rem;
-      margin-bottom: 2rem;
-    }
-    
-    .footer-link {
-      color: white;
-      text-decoration: none;
-      transition: color 0.3s ease;
-    }
-    
-    .footer-link:hover {
-      color: #93c5fd;
-    }
-    
-    .footer-copyright {
-      font-size: 0.9rem;
-      color: #93c5fd;
-    }
-    
-    /* Responsive Styles */
-    @media (max-width: 768px) {
+
       .navbar-container {
-        flex-direction: column;
-        padding: 1rem 3%;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 1rem 5%;
+        max-width: 1400px;
+        margin: 0 auto;
       }
-      
+
       .logo {
+        display: flex;
+        align-items: center;
+        font-size: 1.8rem;
+        font-weight: 700;
+        color: #1a3c6e;
+      }
+
+      .logo span {
+        color: #2563eb;
+      }
+
+      .nav-links {
+        display: flex;
+        gap: 2rem;
+      }
+
+      .nav-link {
+        color: #1a3c6e;
+        text-decoration: none;
+        font-weight: 500;
+        font-size: 1.1rem;
+        position: relative;
+        transition: all 0.3s ease;
+      }
+
+      .nav-link:hover {
+        color: #2563eb;
+      }
+
+      .nav-link::after {
+        content: "";
+        position: absolute;
+        width: 0;
+        height: 2px;
+        bottom: -5px;
+        left: 0;
+        background-color: #2563eb;
+        transition: width 0.3s ease;
+      }
+
+      .nav-link:hover::after {
+        width: 100%;
+      }
+
+      .active {
+        color: #2563eb;
+      }
+
+      .active::after {
+        width: 100%;
+      }
+
+      /* Hero Section */
+      .hero {
+        position: relative;
+        height: 100vh;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        padding: 2rem;
+        text-align: center;
+        overflow: hidden;
+      }
+
+      .hero-bg {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-image: url("images/background.png");
+        background-size: cover;
+        background-position: center;
+        z-index: -2;
+      }
+
+      .hero-overlay {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.5);
+        z-index: -1;
+      }
+
+      .hero-content {
+        max-width: 800px;
+        color: white;
+        position: relative;
+        z-index: 1;
+      }
+
+      .hero-title {
+        font-size: 3.5rem;
+        margin-bottom: 1rem;
+        font-weight: 700;
+        text-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+      }
+
+      .hero-subtitle {
+        font-size: 1.5rem;
+        margin-bottom: 2rem;
+        font-weight: 400;
+        text-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+      }
+
+      /* Molecules Animation */
+      .molecules-container {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        overflow: hidden;
+        z-index: -1;
+      }
+
+      .molecule {
+        position: absolute;
+        width: 60px;
+        height: 60px;
+        background-color: rgba(255, 255, 255, 0.1);
+        border-radius: 50%;
+        animation: float 15s infinite linear;
+      }
+
+      .molecule::before,
+      .molecule::after {
+        content: "";
+        position: absolute;
+        background-color: rgba(255, 255, 255, 0.1);
+        border-radius: 50%;
+      }
+
+      .molecule::before {
+        width: 30px;
+        height: 30px;
+        top: -15px;
+        left: 15px;
+      }
+
+      .molecule::after {
+        width: 20px;
+        height: 20px;
+        bottom: -10px;
+        right: 5px;
+      }
+
+      @keyframes float {
+        0% {
+          transform: translate(0, 0) rotate(0deg);
+        }
+        25% {
+          transform: translate(100px, 50px) rotate(90deg);
+        }
+        50% {
+          transform: translate(200px, 0) rotate(180deg);
+        }
+        75% {
+          transform: translate(100px, -50px) rotate(270deg);
+        }
+        100% {
+          transform: translate(0, 0) rotate(360deg);
+        }
+      }
+
+      /* Lessons Section */
+      .lessons-section {
+        padding: 5rem 2rem;
+        position: relative;
+      }
+
+      .section-title {
+        text-align: center;
+        font-size: 2.5rem;
+        margin-bottom: 3rem;
+        color: #1a3c6e;
+      }
+
+      .lessons-container {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 2rem;
+        max-width: 1200px;
+        margin: 0 auto;
+      }
+
+      .lesson-card {
+        width: 330px;
+        background-color: white;
+        border-radius: 12px;
+        overflow: hidden;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        position: relative;
+        cursor: pointer;
+      }
+
+      .lesson-card:hover {
+        transform: translateY(-10px);
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+      }
+
+      .lesson-card-img {
+        width: 100%;
+        height: 200px;
+        object-fit: cover;
+      }
+
+      .lesson-card-content {
+        padding: 1.5rem;
+      }
+
+      .lesson-title {
+        font-size: 1.5rem;
+        margin-bottom: 0.75rem;
+        color: #1a3c6e;
+      }
+
+      .lesson-description {
+        font-size: 0.95rem;
+        line-height: 1.5;
+        color: #4b5563;
+        margin-bottom: 1.5rem;
+      }
+
+      .lesson-button {
+        display: inline-block;
+        background-color: #2563eb;
+        color: white;
+        font-weight: 500;
+        padding: 0.75rem 1.5rem;
+        border-radius: 6px;
+        text-decoration: none;
+        transition: background-color 0.3s ease;
+      }
+
+      .lesson-button:hover {
+        background-color: #1d4ed8;
+      }
+
+      /* Footer */
+      .footer {
+        background-color: #1a3c6e;
+        color: white;
+        padding: 3rem 2rem;
+        text-align: center;
+      }
+
+      .footer-content {
+        max-width: 800px;
+        margin: 0 auto;
+      }
+
+      .footer-logo {
+        font-size: 2rem;
+        font-weight: 700;
         margin-bottom: 1rem;
       }
-      
-      .nav-links {
-        gap: 1rem;
+
+      .footer-text {
+        margin-bottom: 2rem;
+        line-height: 1.6;
       }
-      
-      .hero-title {
-        font-size: 2.5rem;
-      }
-      
-      .hero-subtitle {
-        font-size: 1.2rem;
-      }
-      
-      .lesson-card {
-        width: 100%;
-        max-width: 350px;
-      }
-      
-      .section-title {
-        font-size: 2rem;
-      }
-    }
-    
-    @media (max-width: 480px) {
-      .hero-title {
-        font-size: 2rem;
-      }
-      
-      .hero-subtitle {
-        font-size: 1rem;
-      }
-      
-      .section-title {
-        font-size: 1.8rem;
-      }
-      
-      .nav-links {
-        gap: 0.8rem;
-      }
-      
-      .nav-link {
-        font-size: 0.9rem;
-      }
-      
-      .lessons-section {
-        padding: 3rem 1rem;
-      }
-      
-      .footer {
-        padding: 2rem 1rem;
-      }
-      
+
       .footer-links {
-        flex-direction: column;
-        gap: 1rem;
+        display: flex;
+        justify-content: center;
+        gap: 2rem;
+        margin-bottom: 2rem;
       }
-    }
-  </style>
-</head>
-<body>
-  <!-- Navbar -->
-  <nav class="navbar">
-    <div class="navbar-container">
-      <div class="logo">
-        Chem<span>Edu</span> VR
-      </div>
-      <div class="nav-links">
-        <a href="#" class="nav-link active">Sākums</a>
-        <a href="#about" class="nav-link">Par laboratoriju</a>
-        <a href="#lessons" class="nav-link">Nodarbības</a>
-      </div>
-    </div>
-  </nav>
-  
-  <!-- Hero Section -->
-  <section class="hero">
-    <div class="hero-bg"></div>
-    <div class="hero-overlay"></div>
-    
-    <!-- Animated Molecules Background -->
-    <div class="molecules-container">
-      <div class="molecule" style="top: 10%; left: 10%; animation-delay: 0s;"></div>
-      <div class="molecule" style="top: 20%; left: 25%; animation-delay: 1s;"></div>
-      <div class="molecule" style="top: 15%; left: 70%; animation-delay: 3s;"></div>
-      <div class="molecule" style="top: 50%; left: 85%; animation-delay: 2s;"></div>
-      <div class="molecule" style="top: 60%; left: 40%; animation-delay: 4s;"></div>
-      <div class="molecule" style="top: 75%; left: 15%; animation-delay: 5s;"></div>
-      <div class="molecule" style="top: 80%; left: 60%; animation-delay: 6s;"></div>
-    </div>
-    
-    <div class="hero-content">
-      <h1 class="hero-title">Laipni lūgti ChemEdu VR</h1>
-      <p class="hero-subtitle">Virtuālā ķīmijas laboratorija aizraujošai ķīmijas apguvei</p>
-    </div>
-  </section>
-  
-  <!-- Lessons Section -->
-  <section id="lessons" class="lessons-section">
-    <h2 class="section-title">Mūsu nodarbības</h2>
-    
-    <div class="lessons-container">
-      <!-- Lesson Card 1 -->
-      <div class="lesson-card">
-        <img src="https://i.ibb.co/0FbZGwX/pharaoh-snake.jpg" alt="Фараонова змея" class="lesson-card-img">
-        <div class="lesson-card-content">
-          <h3 class="lesson-title">Nodarbība 1: Faraona čūska</h3>
-          <p class="lesson-description">
-            Iepazīstiet klasisko eksperimentu "Faraona čūska", kurā dzīvsudraba (II) tiocianāta termiskās sadalīšanās rezultātā veidojas poraina struktūra, kas atgādina čūsku.
-          </p>
-          <a href="experiment1.html" class="lesson-button">Sākt eksperimentu</a>
+
+      .footer-link {
+        color: white;
+        text-decoration: none;
+        transition: color 0.3s ease;
+      }
+
+      .footer-link:hover {
+        color: #93c5fd;
+      }
+
+      .footer-copyright {
+        font-size: 0.9rem;
+        color: #93c5fd;
+      }
+
+      /* Responsive Styles */
+      @media (max-width: 768px) {
+        .navbar-container {
+          flex-direction: column;
+          padding: 1rem 3%;
+        }
+
+        .logo {
+          margin-bottom: 1rem;
+        }
+
+        .nav-links {
+          gap: 1rem;
+        }
+
+        .hero-title {
+          font-size: 2.5rem;
+        }
+
+        .hero-subtitle {
+          font-size: 1.2rem;
+        }
+
+        .lesson-card {
+          width: 100%;
+          max-width: 350px;
+        }
+
+        .section-title {
+          font-size: 2rem;
+        }
+      }
+
+      @media (max-width: 480px) {
+        .hero-title {
+          font-size: 2rem;
+        }
+
+        .hero-subtitle {
+          font-size: 1rem;
+        }
+
+        .section-title {
+          font-size: 1.8rem;
+        }
+
+        .nav-links {
+          gap: 0.8rem;
+        }
+
+        .nav-link {
+          font-size: 0.9rem;
+        }
+
+        .lessons-section {
+          padding: 3rem 1rem;
+        }
+
+        .footer {
+          padding: 2rem 1rem;
+        }
+
+        .footer-links {
+          flex-direction: column;
+          gap: 1rem;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Navbar -->
+    <nav class="navbar">
+      <div class="navbar-container">
+        <div class="logo">Chem<span>Edu</span> VR</div>
+        <div class="nav-links">
+          <a href="#" class="nav-link active">Sākums</a>
+          <a href="#about" class="nav-link">Par laboratoriju</a>
+          <a href="#lessons" class="nav-link">Nodarbības</a>
         </div>
       </div>
-      
-      <!-- Lesson Card 2 -->
-      <div class="lesson-card">
-        <img src="https://i.ibb.co/KqvLLGB/blue-bottle.jpg" alt="Синий бутыль" class="lesson-card-img">
-        <div class="lesson-card-content">
-          <h3 class="lesson-title">Nodarbība 2: Zilā pudele</h3>
-          <p class="lesson-description">
-            Pētiet oksidēšanās-reducēšanās reakcijas, izmantojot eksperimentu "Zilā pudele", kas demonstrē pārsteidzošās krāsu pārmaiņas, kratot šķīdumu.
-          </p>
-          <a href="experiment2.html" class="lesson-button">Sākt eksperimentu</a>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero">
+      <div class="hero-bg"></div>
+      <div class="hero-overlay"></div>
+
+      <!-- Animated Molecules Background -->
+      <div class="molecules-container">
+        <div
+          class="molecule"
+          style="top: 10%; left: 10%; animation-delay: 0s"
+        ></div>
+        <div
+          class="molecule"
+          style="top: 20%; left: 25%; animation-delay: 1s"
+        ></div>
+        <div
+          class="molecule"
+          style="top: 15%; left: 70%; animation-delay: 3s"
+        ></div>
+        <div
+          class="molecule"
+          style="top: 50%; left: 85%; animation-delay: 2s"
+        ></div>
+        <div
+          class="molecule"
+          style="top: 60%; left: 40%; animation-delay: 4s"
+        ></div>
+        <div
+          class="molecule"
+          style="top: 75%; left: 15%; animation-delay: 5s"
+        ></div>
+        <div
+          class="molecule"
+          style="top: 80%; left: 60%; animation-delay: 6s"
+        ></div>
+      </div>
+
+      <div class="hero-content">
+        <h1 class="hero-title">Laipni lūgti ChemEdu VR</h1>
+        <p class="hero-subtitle">
+          Virtuālā ķīmijas laboratorija aizraujošai ķīmijas apguvei
+        </p>
+      </div>
+    </section>
+
+    <!-- Lessons Section -->
+    <section id="lessons" class="lessons-section">
+      <h2 class="section-title">Mūsu nodarbības</h2>
+
+      <div class="lessons-container">
+        <!-- Lesson Card 1 -->
+        <div class="lesson-card">
+          <img
+            src="https://i.ibb.co/0FbZGwX/pharaoh-snake.jpg"
+            alt="Фараонова змея"
+            class="lesson-card-img"
+          />
+          <div class="lesson-card-content">
+            <h3 class="lesson-title">Nodarbība 1: Faraona čūska</h3>
+            <p class="lesson-description">
+              Iepazīstiet klasisko eksperimentu "Faraona čūska", kurā
+              dzīvsudraba (II) tiocianāta termiskās sadalīšanās rezultātā
+              veidojas poraina struktūra, kas atgādina čūsku.
+            </p>
+            <a href="experiment1.html" class="lesson-button"
+              >Sākt eksperimentu</a
+            >
+          </div>
+        </div>
+
+        <!-- Lesson Card 2 -->
+        <div class="lesson-card">
+          <img
+            src="https://i.ibb.co/KqvLLGB/blue-bottle.jpg"
+            alt="Синий бутыль"
+            class="lesson-card-img"
+          />
+          <div class="lesson-card-content">
+            <h3 class="lesson-title">Nodarbība 2: Zilā pudele</h3>
+            <p class="lesson-description">
+              Pētiet oksidēšanās-reducēšanās reakcijas, izmantojot eksperimentu
+              "Zilā pudele", kas demonstrē pārsteidzošās krāsu pārmaiņas, kratot
+              šķīdumu.
+            </p>
+            <a href="experiment2.html" class="lesson-button"
+              >Sākt eksperimentu</a
+            >
+          </div>
+        </div>
+
+        <!-- Lesson Card 3 -->
+        <div class="lesson-card">
+          <img
+            src="https://i.ibb.co/chc06wG/chemical-volcano.jpg"
+            alt="Химический вулкан"
+            class="lesson-card-img"
+          />
+          <div class="lesson-card-content">
+            <h3 class="lesson-title">Nodarbība 3: Ķīmiskais vulkāns</h3>
+            <p class="lesson-description">
+              Atkārtojiet slaveno eksperimentu "Ķīmiskais vulkāns" un novērojiet
+              ūdeņraža peroksīda katalītiskās sadalīšanās reakciju ar strauju
+              skābekļa izdalīšanos.
+            </p>
+            <a href="experiment3.html" class="lesson-button"
+              >Sākt eksperimentu</a
+            >
+          </div>
         </div>
       </div>
-      
-      <!-- Lesson Card 3 -->
-      <div class="lesson-card">
-        <img src="https://i.ibb.co/chc06wG/chemical-volcano.jpg" alt="Химический вулкан" class="lesson-card-img">
-        <div class="lesson-card-content">
-          <h3 class="lesson-title">Nodarbība 3: Ķīmiskais vulkāns</h3>
-          <p class="lesson-description">
-            Atkārtojiet slaveno eksperimentu "Ķīmiskais vulkāns" un novērojiet ūdeņraža peroksīda katalītiskās sadalīšanās reakciju ar strauju skābekļa izdalīšanos.
-          </p>
-          <a href="experiment3.html" class="lesson-button">Sākt eksperimentu</a>
+    </section>
+
+    <!-- About Section -->
+    <section
+      id="about"
+      class="lessons-section"
+      style="background-color: #f0f4f8"
+    >
+      <h2 class="section-title">Par laboratoriju</h2>
+
+      <div style="max-width: 800px; margin: 0 auto; text-align: center">
+        <p style="font-size: 1.1rem; line-height: 1.6; margin-bottom: 2rem">
+          ChemEdu VR ir inovatīva virtuālā ķīmijas laboratorija, kas izveidota
+          drošai un aizraujošai ķīmijas eksperimentu apguvei. Mūsu platforma
+          ļauj studentiem veikt eksperimentus, kas reālos apstākļos varētu būt
+          bīstami vai prasītu dārgu aprīkojumu.
+        </p>
+        <p style="font-size: 1.1rem; line-height: 1.6">
+          Visus eksperimentus papildina detalizētas, soli pa solim instrukcijas
+          un zinātniski skaidrojumi par notiekošajiem procesiem, padarot ķīmijas
+          apguvi pieejamu un interesantu ikvienam.
+        </p>
+      </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+      <div class="footer-content">
+        <div class="footer-logo">ChemEdu VR</div>
+        <p class="footer-text">
+          Virtuālā ķīmijas laboratorija drošai un aizraujošai ķīmijas apguvei.
+        </p>
+        <div class="footer-links">
+          <a href="#" class="footer-link">Sākums</a>
+          <a href="#about" class="footer-link">Par laboratoriju</a>
+          <a href="#lessons" class="footer-link">Nodarbības</a>
         </div>
+        <p class="footer-copyright">
+          © 2025 ChemEdu VR. Visas tiesības aizsargātas.
+        </p>
       </div>
-    </div>
-  </section>
-  
-  <!-- About Section -->
-  <section id="about" class="lessons-section" style="background-color: #f0f4f8;">
-    <h2 class="section-title">Par laboratoriju</h2>
-    
-    <div style="max-width: 800px; margin: 0 auto; text-align: center;">
-      <p style="font-size: 1.1rem; line-height: 1.6; margin-bottom: 2rem;">
-        ChemEdu VR ir inovatīva virtuālā ķīmijas laboratorija, kas izveidota drošai un aizraujošai ķīmijas eksperimentu apguvei. Mūsu platforma ļauj studentiem veikt eksperimentus, kas reālos apstākļos varētu būt bīstami vai prasītu dārgu aprīkojumu.
-      </p>
-      <p style="font-size: 1.1rem; line-height: 1.6;">
-        Visus eksperimentus papildina detalizētas, soli pa solim instrukcijas un zinātniski skaidrojumi par notiekošajiem procesiem, padarot ķīmijas apguvi pieejamu un interesantu ikvienam.
-      </p>
-    </div>
-  </section>
-  
-  <!-- Footer -->
-  <footer class="footer">
-    <div class="footer-content">
-      <div class="footer-logo">ChemEdu VR</div>
-      <p class="footer-text">
-        Virtuālā ķīmijas laboratorija drošai un aizraujošai ķīmijas apguvei.
-      </p>
-      <div class="footer-links">
-        <a href="#" class="footer-link">Sākums</a>
-        <a href="#about" class="footer-link">Par laboratoriju</a>
-        <a href="#lessons" class="footer-link">Nodarbības</a>
-      </div>
-      <p class="footer-copyright">© 2025 ChemEdu VR. Visas tiesības aizsargātas.</p>
-    </div>
-  </footer>
-  
-  <script>
-    // Добавление анимации молекул
-    document.addEventListener('DOMContentLoaded', function() {
-      const molecules = document.querySelectorAll('.molecule');
-      
-      // Рандомные стартовые позиции для молекул
-      molecules.forEach(molecule => {
-        const randomX = Math.floor(Math.random() * 100);
-        const randomY = Math.floor(Math.random() * 100);
-        molecule.style.left = `${randomX}%`;
-        molecule.style.top = `${randomY}%`;
-      });
-      
-      // Анимация карточек при скролле
-      const lessonCards = document.querySelectorAll('.lesson-card');
-      
-      const observer = new IntersectionObserver(entries => {
-        entries.forEach(entry => {
-          if (entry.isIntersecting) {
-            entry.target.style.opacity = 1;
-            entry.target.style.transform = 'translateY(0)';
-          }
+    </footer>
+
+    <script>
+      // Добавление анимации молекул
+      document.addEventListener("DOMContentLoaded", function () {
+        const molecules = document.querySelectorAll(".molecule");
+
+        // Рандомные стартовые позиции для молекул
+        molecules.forEach((molecule) => {
+          const randomX = Math.floor(Math.random() * 100);
+          const randomY = Math.floor(Math.random() * 100);
+          molecule.style.left = `${randomX}%`;
+          molecule.style.top = `${randomY}%`;
         });
-      }, { threshold: 0.1 });
-      
-      lessonCards.forEach(card => {
-        card.style.opacity = 0;
-        card.style.transform = 'translateY(20px)';
-        card.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
-        observer.observe(card);
-      });
-      
-      // Мобильное меню (гамбургер)
-      const createMobileMenu = () => {
-        // Проверяем ширину экрана
-        if (window.innerWidth <= 768 && !document.querySelector('.mobile-menu-button')) {
-          // Создаем кнопку гамбургер-меню
-          const navContainer = document.querySelector('.navbar-container');
-          const navLinks = document.querySelector('.nav-links');
-          
-          // Создаем бургер-кнопку
-          const mobileMenuButton = document.createElement('div');
-          mobileMenuButton.className = 'mobile-menu-button';
-          mobileMenuButton.innerHTML = `
+
+        // Анимация карточек при скролле
+        const lessonCards = document.querySelectorAll(".lesson-card");
+
+        const observer = new IntersectionObserver(
+          (entries) => {
+            entries.forEach((entry) => {
+              if (entry.isIntersecting) {
+                entry.target.style.opacity = 1;
+                entry.target.style.transform = "translateY(0)";
+              }
+            });
+          },
+          { threshold: 0.1 }
+        );
+
+        lessonCards.forEach((card) => {
+          card.style.opacity = 0;
+          card.style.transform = "translateY(20px)";
+          card.style.transition = "opacity 0.5s ease, transform 0.5s ease";
+          observer.observe(card);
+        });
+
+        // Мобильное меню (гамбургер)
+        const createMobileMenu = () => {
+          // Проверяем ширину экрана
+          if (
+            window.innerWidth <= 768 &&
+            !document.querySelector(".mobile-menu-button")
+          ) {
+            // Создаем кнопку гамбургер-меню
+            const navContainer = document.querySelector(".navbar-container");
+            const navLinks = document.querySelector(".nav-links");
+
+            // Создаем бургер-кнопку
+            const mobileMenuButton = document.createElement("div");
+            mobileMenuButton.className = "mobile-menu-button";
+            mobileMenuButton.innerHTML = `
             <div class="bar"></div>
             <div class="bar"></div>
             <div class="bar"></div>
           `;
-          
-          // Добавляем стили
-          const style = document.createElement('style');
-          style.innerHTML = `
+
+            // Добавляем стили
+            const style = document.createElement("style");
+            style.innerHTML = `
             .mobile-menu-button {
               display: none;
               flex-direction: column;
@@ -628,42 +699,42 @@
               }
             }
           `;
-          
-          document.head.appendChild(style);
-          
-          // Вставляем кнопку
-          navContainer.appendChild(mobileMenuButton);
-          
-          // Добавляем обработчик клика
-          mobileMenuButton.addEventListener('click', () => {
-            mobileMenuButton.classList.toggle('mobile-menu-open');
-            navLinks.classList.toggle('active');
-            
-            // Блокируем/разблокируем скролл на странице
-            if (navLinks.classList.contains('active')) {
-              document.body.style.overflow = 'hidden';
-            } else {
-              document.body.style.overflow = '';
-            }
-          });
-          
-          // Закрываем меню при клике на ссылку
-          document.querySelectorAll('.nav-link').forEach(link => {
-            link.addEventListener('click', () => {
-              mobileMenuButton.classList.remove('mobile-menu-open');
-              navLinks.classList.remove('active');
-              document.body.style.overflow = '';
+
+            document.head.appendChild(style);
+
+            // Вставляем кнопку
+            navContainer.appendChild(mobileMenuButton);
+
+            // Добавляем обработчик клика
+            mobileMenuButton.addEventListener("click", () => {
+              mobileMenuButton.classList.toggle("mobile-menu-open");
+              navLinks.classList.toggle("active");
+
+              // Блокируем/разблокируем скролл на странице
+              if (navLinks.classList.contains("active")) {
+                document.body.style.overflow = "hidden";
+              } else {
+                document.body.style.overflow = "";
+              }
             });
-          });
-        }
-      };
-      
-      // Инициализация мобильного меню
-      createMobileMenu();
-      
-      // Пересоздаем меню при изменении размера экрана
-      window.addEventListener('resize', createMobileMenu);
-    });
-  </script>
-</body>
+
+            // Закрываем меню при клике на ссылку
+            document.querySelectorAll(".nav-link").forEach((link) => {
+              link.addEventListener("click", () => {
+                mobileMenuButton.classList.remove("mobile-menu-open");
+                navLinks.classList.remove("active");
+                document.body.style.overflow = "";
+              });
+            });
+          }
+        };
+
+        // Инициализация мобильного меню
+        createMobileMenu();
+
+        // Пересоздаем меню при изменении размера экрана
+        window.addEventListener("resize", createMobileMenu);
+      });
+    </script>
+  </body>
 </html>
