@@ -1,12 +1,12 @@
 <!DOCTYPE html>
-<html lang="ru">
+<html lang="lv">
   <head>
     <meta charset="UTF-8" />
     <meta
       name="viewport"
       content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
     />
-    <title>ChemEdu VR - Фараонова змея</title>
+    <title>ChemEdu VR - Faraona čūska</title>
     <link
       href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap"
       rel="stylesheet"
@@ -26,7 +26,7 @@
         overflow-x: hidden;
       }
 
-      /* Navbar Styles - как на главной странице */
+      /* Navbar Styles */
       .navbar {
         position: fixed;
         top: 0;
@@ -96,7 +96,7 @@
       /* Стили интерфейса эксперимента */
       .info-panel {
         position: absolute;
-        top: 80px; /* Сдвинул вниз, чтобы не перекрывалось с меню */
+        top: 80px;
         left: 20px;
         background: rgba(0, 0, 0, 0.7);
         color: white;
@@ -173,7 +173,7 @@
 
       .reaction-progress {
         position: absolute;
-        top: 80px; /* Сдвинул вниз, чтобы не перекрывалось с меню */
+        top: 80px;
         right: 20px;
         background: rgba(0, 0, 0, 0.7);
         color: white;
@@ -207,17 +207,97 @@
       /* Адаптивные стили */
       @media (max-width: 768px) {
         .navbar-container {
-          flex-direction: column;
           padding: 1rem 3%;
-        }
-
-        .logo {
-          margin-bottom: 1rem;
         }
 
         .info-panel, .reaction-progress {
           top: 120px;
+          max-width: 90%;
+          margin: 0 auto;
+          left: 0;
+          right: 0;
         }
+        
+        .info-panel {
+          top: 70px;
+        }
+        
+        .reaction-progress {
+          top: auto;
+          bottom: 150px;
+        }
+
+        .instructions-panel {
+          bottom: 150px;
+          max-width: 90%;
+          margin: 0 auto;
+          left: 0;
+          right: 0;
+        }
+        
+        .ui-controls {
+          width: 90%;
+        }
+      }
+      
+      @media (max-width: 480px) {
+        .navbar-container {
+          flex-direction: column;
+          padding: 0.5rem 2%;
+        }
+        
+        .logo {
+          font-size: 1.5rem;
+          margin-bottom: 0.5rem;
+        }
+        
+        .nav-link {
+          font-size: 0.9rem;
+        }
+        
+        .info-panel {
+          top: 100px;
+          padding: 10px;
+          font-size: 0.9rem;
+        }
+        
+        .instructions-panel {
+          bottom: 130px;
+          padding: 10px;
+          font-size: 0.9rem;
+        }
+        
+        .reaction-progress {
+          padding: 10px;
+          font-size: 0.9rem;
+          bottom: 220px;
+        }
+        
+        .ui-controls {
+          padding: 10px;
+          gap: 8px;
+          bottom: 10px;
+        }
+        
+        .control-button {
+          padding: 10px 8px;
+          font-size: 14px;
+        }
+      }
+      
+      /* Добавляем стиль для порошка */
+      .powder {
+        display: none;
+        position: absolute;
+        top: 80px; /* будет изменено через JS */
+        left: 20px; /* будет изменено через JS */
+        width: 20px;
+        height: 20px;
+        background-color: #C8A45C;
+        border-radius: 50%;
+        z-index: 10;
+        opacity: 0;
+        transition: opacity 0.5s;
       }
     </style>
     <script>
@@ -360,39 +440,38 @@
     </script>
   </head>
   <body>
-    <!-- Добавленное меню в стиле главной страницы -->
+    <!-- Меню в стиле главной страницы -->
     <nav class="navbar">
       <div class="navbar-container">
         <a href="index.html" class="logo">Chem<span>Edu</span> VR</a>
         <div class="nav-links">
-          <a href="index.html" class="nav-link">Назад на главную</a>
+          <a href="index.html" class="nav-link">Atpakaļ uz sākumu</a>
         </div>
       </div>
     </nav>
 
     <div class="info-panel">
-      <h2>Фараонова змея</h2>
+      <h2>Faraona čūska</h2>
       <p>
-        Классический химический эксперимент, в котором при поджигании роданида
-        ртути (II) (Hg(SCN)₂) происходит экзотермическая реакция разложения с
-        образованием пористой массы похожей на змею.
+        Klasiskais ķīmijas eksperiments, kurā dzīvsudraba (II) tiocianāta (Hg(SCN)₂) sadedzināšanas 
+        rezultātā notiek eksotermiska sadalīšanās reakcija, veidojot porainu masu, kas atgādina čūsku.
       </p>
-      <p>Реакция: 2Hg(SCN)₂ → 2HgS + CS₂ + C₃N₄</p>
+      <p>Reakcija: 2Hg(SCN)₂ → 2HgS + CS₂ + C₃N₄</p>
       <p>
-        ВНИМАНИЕ: В реальной лаборатории это опасный эксперимент, так как
-        соединения ртути токсичны, а во время реакции выделяются ядовитые газы!
+        UZMANĪBU: Reālā laboratorijā šis ir bīstams eksperiments, jo dzīvsudraba savienojumi ir toksiski, 
+        un reakcijas laikā izdalās indīgas gāzes!
       </p>
     </div>
 
     <div class="instructions-panel">
-      <h3 id="current-step">Шаг 1</h3>
+      <h3 id="current-step">1. solis</h3>
       <p id="step-description">
-        Переместите роданид ртути (II) на керамическую тарелку
+        Novietojiet kolbu ar dzīvsudraba (II) tiocianātu uz keramiskā šķīvja
       </p>
     </div>
 
     <div class="reaction-progress" style="display: none">
-      <h3>Прогресс реакции</h3>
+      <h3>Reakcijas progress</h3>
       <div class="progress-container">
         <div id="reaction-progress-bar" class="progress-bar"></div>
       </div>
@@ -400,15 +479,18 @@
 
     <div class="ui-controls">
       <button id="place-powder" class="control-button">
-        Переместить роданид ртути на тарелку
+        Pārvietot kolbu ar pulveri uz šķīvja
       </button>
       <button id="ignite-powder" class="control-button" disabled>
-        Поджечь роданид ртути
+        Aizdedzināt pulveri
       </button>
       <button id="reset-experiment" class="control-button" disabled>
-        Сбросить эксперимент
+        Atiestatīt eksperimentu
       </button>
     </div>
+
+    <!-- Элемент для визуализации порошка при его пересыпании из колбы -->
+    <div id="powder-animation" class="powder"></div>
 
     <a-scene>
       <!-- Фон с обычной картинкой (не 360°) -->
@@ -441,29 +523,52 @@
         shadow
       ></a-entity>
 
-      <!-- Роданид ртути (порошок) - изначально расположен отдельно -->
-      <a-cylinder
-        id="mercury-thiocyanate"
-        position="0.5 1.4 -0.2"
-        radius="0.03"
-        height="0.02"
-        color="#DDB373"
-        shadow
+      <!-- Колба с порошком -->
+      <a-entity
+        id="mercury-thiocyanate-container"
+        position="0.5 1.35 -0.2"
+        rotation="-90 0 0"
+        scale="0.02 0.02 0.02"
       >
+        <!-- Стеклянная колба -->
+        <a-entity
+          id="flask"
+          obj-model="obj: assets/models/flask.obj"
+          material="color: #84a4bd; opacity: 0.7; transparent: true"
+        ></a-entity>
+        
+        <!-- Порошок внутри колбы -->
+        <a-entity
+          id="powder-inside"
+          position="0 0 1.5"
+          geometry="primitive: sphere; radius: 1.5"
+          material="color: #C8A45C; roughness: 0.6"
+        ></a-entity>
+        
+        <!-- Текст с формулой над колбой -->
         <a-text
+          id="formula-text"
           value="Hg(SCN)₂"
-          position="0 0.05 0"
-          scale="0.1 0.1 0.1"
+          position="0 30 0"
+          scale="10 10 10"
           align="center"
           color="#000000"
-        >
-        </a-text>
-      </a-cylinder>
+        ></a-text>
+      </a-entity>
+      
+      <!-- Порошок, который будет высыпан на тарелку -->
+      <a-entity
+        id="powder-on-plate"
+        position="0 1.41 -0.2"
+        geometry="primitive: cylinder; height: 0.02; radius: 0.05"
+        material="color: #C8A45C; roughness: 0.8"
+        visible="false"
+      ></a-entity>
 
-      <!-- Зажигалка (3D модель) вместо примитива -->
+      <!-- Зажигалка (3D модель) -->
       <a-entity
         id="lighter"
-        position="-0.5 1.4 -0.2"
+        position="-0.5 1.35 -0.2"
         scale="0.05 0.05 0.05"
         rotation="0 0 0"
         gltf-model="assets/models/metalic_lighter.glb"
@@ -497,17 +602,18 @@
         // Получаем ссылки на элементы интерфейса
         const placePowderButton = document.getElementById("place-powder");
         const ignitePowderButton = document.getElementById("ignite-powder");
-        const resetExperimentButton =
-          document.getElementById("reset-experiment");
+        const resetExperimentButton = document.getElementById("reset-experiment");
         const stepTitle = document.getElementById("current-step");
         const stepDescription = document.getElementById("step-description");
         const reactionProgress = document.querySelector(".reaction-progress");
         const progressBar = document.getElementById("reaction-progress-bar");
+        const powderAnimation = document.getElementById("powder-animation");
 
         // Получаем ссылки на 3D объекты
-        const mercuryThiocyanate = document.getElementById(
-          "mercury-thiocyanate"
-        );
+        const flaskContainer = document.getElementById("mercury-thiocyanate-container");
+        const flaskElement = document.getElementById("flask");
+        const powderInside = document.getElementById("powder-inside");
+        const powderOnPlate = document.getElementById("powder-on-plate");
         const lighter = document.getElementById("lighter");
         const snakeEntity = document.getElementById("snake-entity");
         const ceramicPlate = document.getElementById("ceramic-plate");
@@ -517,24 +623,63 @@
         let reactionStarted = false;
         let reactionCompleted = false;
 
-        // Функция для перемещения порошка на тарелку
+        // Функция для перемещения колбы на тарелку и высыпания порошка
         placePowderButton.addEventListener("click", function () {
-          // Анимируем перемещение порошка
-          mercuryThiocyanate.setAttribute("animation", {
+          // Анимируем перемещение колбы
+          flaskContainer.setAttribute("animation", {
             property: "position",
-            to: "0 1.42 -0.2", // Новая позиция на тарелке
+            to: "0 1.6 -0.2",
             dur: 1000,
             easing: "easeOutQuad",
           });
 
-          // Обновляем состояние
-          powderPlaced = true;
-          placePowderButton.disabled = true;
-          ignitePowderButton.disabled = false;
+          // Через секунду после перемещения колбы, высыпаем порошок
+          setTimeout(function() {
+            // Создаем анимацию наклона колбы для высыпания порошка
+            flaskContainer.setAttribute("animation__tilt", {
+              property: "rotation",
+              from: "-90 0 0",
+              to: "0 0 135", // Наклоняем колбу
+              dur: 1000,
+              easing: "easeOutQuad",
+            });
+            
+            // Удаляем порошок из колбы и показываем его на тарелке через секунду
+            setTimeout(function() {
+              // Скрываем порошок в колбе
+              powderInside.setAttribute("visible", "false");
+              
+              // Показываем порошок на тарелке
+              powderOnPlate.setAttribute("visible", "true");
+              
+              // Через еще секунду возвращаем колбу на исходное место (уже без порошка)
+              setTimeout(function() {
+                // Возвращаем колбу обратно
+                flaskContainer.setAttribute("animation__return", {
+                  property: "position",
+                  to: "0.5 1.4 -0.2",
+                  dur: 1000,
+                  easing: "easeOutQuad",
+                });
+                
+                flaskContainer.setAttribute("animation__untilt", {
+                  property: "rotation",
+                  to: "-90 0 0",
+                  dur: 1000,
+                  easing: "easeOutQuad",
+                });
+                
+                // Обновляем состояние
+                powderPlaced = true;
+                placePowderButton.disabled = true;
+                ignitePowderButton.disabled = false;
 
-          // Обновляем инструкции
-          stepTitle.textContent = "Шаг 2";
-          stepDescription.textContent = "Поджгите роданид ртути";
+                // Обновляем инструкции
+                stepTitle.textContent = "2. solis";
+                stepDescription.textContent = "Aizdedziniet pulveri uz šķīvja";
+              }, 1000);
+            }, 1000);
+          }, 1000);
         });
 
         // Функция для поджигания порошка
@@ -566,6 +711,9 @@
 
           // После анимации зажигаем порошок
           setTimeout(function () {
+            // Скрываем порошок на тарелке
+            powderOnPlate.setAttribute("visible", "false");
+            
             // Активируем реакцию
             snakeEntity.setAttribute("pharaoh-snake", "active", true);
 
@@ -591,9 +739,9 @@
             resetExperimentButton.disabled = false;
 
             // Обновляем инструкции
-            stepTitle.textContent = "Шаг 3";
+            stepTitle.textContent = "3. solis";
             stepDescription.textContent =
-              "Наблюдайте за реакцией разложения. После завершения нажмите 'Сбросить эксперимент' для повторения";
+              "Novērojiet sadalīšanās reakciju. Pēc beigšanas nospiediet 'Atiestatīt eksperimentu', lai atkārtotu";
 
             // Показываем прогресс реакции
             reactionProgress.style.display = "block";
@@ -618,15 +766,10 @@
           while (snakeEntity.firstChild) {
             snakeEntity.removeChild(snakeEntity.firstChild);
           }
-
-          // Сбрасываем позицию порошка
-          mercuryThiocyanate.setAttribute("animation", {
-            property: "position",
-            to: "0.5 1.4 -0.2", // Возвращаем на начальную позицию
-            dur: 1000,
-            easing: "easeOutQuad",
-          });
-
+          
+          // Возвращаем порошок в колбу
+          powderInside.setAttribute("visible", "true");
+          
           // Сбрасываем состояние
           powderPlaced = false;
           reactionStarted = false;
@@ -642,17 +785,33 @@
           progressBar.style.width = "0%";
 
           // Обновляем инструкции
-          stepTitle.textContent = "Шаг 1";
+          stepTitle.textContent = "1. solis";
           stepDescription.textContent =
-            "Переместите роданид ртути (II) на керамическую тарелку";
+            "Novietojiet kolbu ar dzīvsudraba (II) tiocianātu uz keramiskā šķīvja";
         });
 
+        // Функция для обеспечения адаптивности
+        function handleResize() {
+          if (window.innerWidth <= 768) {
+            // Для мобильных устройств
+            document.querySelector('.info-panel').style.width = '90%';
+            document.querySelector('.instructions-panel').style.width = '90%';
+            document.querySelector('.ui-controls').style.width = '90%';
+          } else {
+            // Для ПК
+            document.querySelector('.info-panel').style.width = '350px';
+            document.querySelector('.instructions-panel').style.width = '350px';
+            document.querySelector('.ui-controls').style.width = '300px';
+          }
+        }
+
+        // Вызываем функцию при загрузке и изменении размера окна
+        window.addEventListener('resize', handleResize);
+        handleResize();
+        
         // Добавляем обработчик события загрузки 3D-моделей
         document.querySelector('a-scene').addEventListener('loaded', function () {
           console.log('A-Frame scene loaded');
-          
-          // Здесь можно добавить код, который выполнится после полной загрузки сцены
-          // Например, настройка дополнительных параметров 3D-моделей
         });
       });
     </script>
