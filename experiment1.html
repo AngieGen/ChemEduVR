@@ -210,18 +210,19 @@
           padding: 1rem 3%;
         }
 
-        .info-panel, .reaction-progress {
+        .info-panel,
+        .reaction-progress {
           top: 120px;
           max-width: 90%;
           margin: 0 auto;
           left: 0;
           right: 0;
         }
-        
+
         .info-panel {
           top: 70px;
         }
-        
+
         .reaction-progress {
           top: auto;
           bottom: 150px;
@@ -234,57 +235,57 @@
           left: 0;
           right: 0;
         }
-        
+
         .ui-controls {
           width: 90%;
         }
       }
-      
+
       @media (max-width: 480px) {
         .navbar-container {
           flex-direction: column;
           padding: 0.5rem 2%;
         }
-        
+
         .logo {
           font-size: 1.5rem;
           margin-bottom: 0.5rem;
         }
-        
+
         .nav-link {
           font-size: 0.9rem;
         }
-        
+
         .info-panel {
           top: 100px;
           padding: 10px;
           font-size: 0.9rem;
         }
-        
+
         .instructions-panel {
           bottom: 130px;
           padding: 10px;
           font-size: 0.9rem;
         }
-        
+
         .reaction-progress {
           padding: 10px;
           font-size: 0.9rem;
           bottom: 220px;
         }
-        
+
         .ui-controls {
           padding: 10px;
           gap: 8px;
           bottom: 10px;
         }
-        
+
         .control-button {
           padding: 10px 8px;
           font-size: 14px;
         }
       }
-      
+
       /* Добавляем стиль для порошка */
       .powder {
         display: none;
@@ -293,7 +294,7 @@
         left: 20px; /* будет изменено через JS */
         width: 20px;
         height: 20px;
-        background-color: #C8A45C;
+        background-color: #242424;
         border-radius: 50%;
         z-index: 10;
         opacity: 0;
@@ -453,13 +454,14 @@
     <div class="info-panel">
       <h2>Faraona čūska</h2>
       <p>
-        Klasiskais ķīmijas eksperiments, kurā dzīvsudraba (II) tiocianāta (Hg(SCN)₂) sadedzināšanas 
-        rezultātā notiek eksotermiska sadalīšanās reakcija, veidojot porainu masu, kas atgādina čūsku.
+        Klasiskais ķīmijas eksperiments, kurā dzīvsudraba (II) tiocianāta
+        (Hg(SCN)₂) sadedzināšanas rezultātā notiek eksotermiska sadalīšanās
+        reakcija, veidojot porainu masu, kas atgādina čūsku.
       </p>
       <p>Reakcija: 2Hg(SCN)₂ → 2HgS + CS₂ + C₃N₄</p>
       <p>
-        UZMANĪBU: Reālā laboratorijā šis ir bīstams eksperiments, jo dzīvsudraba savienojumi ir toksiski, 
-        un reakcijas laikā izdalās indīgas gāzes!
+        UZMANĪBU: Reālā laboratorijā šis ir bīstams eksperiments, jo dzīvsudraba
+        savienojumi ir toksiski, un reakcijas laikā izdalās indīgas gāzes!
       </p>
     </div>
 
@@ -495,7 +497,7 @@
     <a-scene>
       <!-- Фон с обычной картинкой (не 360°) -->
       <a-sky src="images/background.png"></a-sky>
-      
+
       <!-- Замена плоскости на пол в 3D сцене (можно убрать, если пол есть на фоне) -->
       <a-plane
         position="0 -0.5 0"
@@ -536,32 +538,33 @@
           obj-model="obj: assets/models/flask.obj"
           material="color: #84a4bd; opacity: 0.7; transparent: true"
         ></a-entity>
-        
+
         <!-- Порошок внутри колбы -->
         <a-entity
           id="powder-inside"
           position="0 0 1.5"
           geometry="primitive: sphere; radius: 1.5"
-          material="color: #C8A45C; roughness: 0.6"
+          material="color: #000000; roughness: 0.6"
         ></a-entity>
-        
+
         <!-- Текст с формулой над колбой -->
         <a-text
           id="formula-text"
           value="Hg(SCN)₂"
-          position="0 30 0"
+          position="0 -5 15"
+          rotation="90 0 0"
           scale="10 10 10"
           align="center"
-          color="#000000"
+          color="#ffffff"
         ></a-text>
       </a-entity>
-      
+
       <!-- Порошок, который будет высыпан на тарелку -->
       <a-entity
         id="powder-on-plate"
         position="0 1.41 -0.2"
         geometry="primitive: cylinder; height: 0.02; radius: 0.05"
-        material="color: #C8A45C; roughness: 0.8"
+        material="color: #696969; roughness: 0.3"
         visible="false"
       ></a-entity>
 
@@ -569,7 +572,7 @@
       <a-entity
         id="lighter"
         position="-0.5 1.35 -0.2"
-        scale="0.05 0.05 0.05"
+        scale="0.07 0.07 0.07"
         rotation="0 0 0"
         gltf-model="assets/models/metalic_lighter.glb"
       ></a-entity>
@@ -592,7 +595,7 @@
       ></a-light>
 
       <!-- Камера -->
-      <a-entity position="0 0.1 0.5">
+      <a-entity position="0 0.1 0.7">
         <a-camera look-controls wasd-controls></a-camera>
       </a-entity>
     </a-scene>
@@ -602,7 +605,8 @@
         // Получаем ссылки на элементы интерфейса
         const placePowderButton = document.getElementById("place-powder");
         const ignitePowderButton = document.getElementById("ignite-powder");
-        const resetExperimentButton = document.getElementById("reset-experiment");
+        const resetExperimentButton =
+          document.getElementById("reset-experiment");
         const stepTitle = document.getElementById("current-step");
         const stepDescription = document.getElementById("step-description");
         const reactionProgress = document.querySelector(".reaction-progress");
@@ -610,7 +614,9 @@
         const powderAnimation = document.getElementById("powder-animation");
 
         // Получаем ссылки на 3D объекты
-        const flaskContainer = document.getElementById("mercury-thiocyanate-container");
+        const flaskContainer = document.getElementById(
+          "mercury-thiocyanate-container"
+        );
         const flaskElement = document.getElementById("flask");
         const powderInside = document.getElementById("powder-inside");
         const powderOnPlate = document.getElementById("powder-on-plate");
@@ -634,7 +640,7 @@
           });
 
           // Через секунду после перемещения колбы, высыпаем порошок
-          setTimeout(function() {
+          setTimeout(function () {
             // Создаем анимацию наклона колбы для высыпания порошка
             flaskContainer.setAttribute("animation__tilt", {
               property: "rotation",
@@ -643,17 +649,17 @@
               dur: 1000,
               easing: "easeOutQuad",
             });
-            
+
             // Удаляем порошок из колбы и показываем его на тарелке через секунду
-            setTimeout(function() {
+            setTimeout(function () {
               // Скрываем порошок в колбе
               powderInside.setAttribute("visible", "false");
-              
+
               // Показываем порошок на тарелке
               powderOnPlate.setAttribute("visible", "true");
-              
+
               // Через еще секунду возвращаем колбу на исходное место (уже без порошка)
-              setTimeout(function() {
+              setTimeout(function () {
                 // Возвращаем колбу обратно
                 flaskContainer.setAttribute("animation__return", {
                   property: "position",
@@ -661,14 +667,14 @@
                   dur: 1000,
                   easing: "easeOutQuad",
                 });
-                
+
                 flaskContainer.setAttribute("animation__untilt", {
                   property: "rotation",
                   to: "-90 0 0",
                   dur: 1000,
                   easing: "easeOutQuad",
                 });
-                
+
                 // Обновляем состояние
                 powderPlaced = true;
                 placePowderButton.disabled = true;
@@ -682,7 +688,7 @@
           }, 1000);
         });
 
-        // Функция для поджигания порошка
+        // функции для поджигания порошка
         ignitePowderButton.addEventListener("click", function () {
           // Анимируем перемещение зажигалки к порошку
           lighter.setAttribute("animation", {
@@ -692,35 +698,64 @@
             easing: "easeOutQuad",
           });
 
-          // Добавляем пламя к зажигалке
+          // Добавляем вращение зажигалки
+          lighter.setAttribute("animation__rotate", {
+            property: "rotation",
+            from: "0 0 0",
+            to: "0 -90 -90", // Наклоняем зажигалку к порошку
+            dur: 1000,
+            easing: "easeOutQuad",
+          });
+
+          // Добавляем пламя к зажигалке с улучшенной видимостью
           const flame = document.createElement("a-entity");
           flame.setAttribute("id", "lighter-flame");
-          flame.setAttribute("position", "0 0.05 0");
+          flame.setAttribute("position", "-0.2 2 0"); // Позиционируем пламя выше
           flame.setAttribute("geometry", {
             primitive: "cone",
-            height: 0.05,
-            radiusBottom: 0.01,
-            radiusTop: 0.001,
+            height: 1,
+            radiusBottom: 0.3,
+            radiusTop: 0.02,
           });
           flame.setAttribute("material", {
             color: "#ff7700",
             emissive: "#ff5500",
             emissiveIntensity: 2,
+            transparent: true,
+            opacity: 0.7,
           });
+
+          // Добавляем свет, исходящий от пламени
+          const flameLight = document.createElement("a-entity");
+          flameLight.setAttribute("light", {
+            type: "point",
+            color: "#ff5500",
+            intensity: 0.8,
+            distance: 0.5,
+          });
+          flame.appendChild(flameLight);
+
           lighter.appendChild(flame);
 
           // После анимации зажигаем порошок
           setTimeout(function () {
             // Скрываем порошок на тарелке
             powderOnPlate.setAttribute("visible", "false");
-            
+
             // Активируем реакцию
             snakeEntity.setAttribute("pharaoh-snake", "active", true);
 
-            // Возвращаем зажигалку на место
+            // Возвращаем зажигалку на место с анимацией вращения
             lighter.setAttribute("animation", {
               property: "position",
               to: "-0.5 1.4 -0.2", // Возвращаем на начальную позицию
+              dur: 1000,
+              easing: "easeOutQuad",
+            });
+
+            lighter.setAttribute("animation__rotate", {
+              property: "rotation",
+              to: "0 0 0", // Возвращаем исходный поворот
               dur: 1000,
               easing: "easeOutQuad",
             });
@@ -766,10 +801,10 @@
           while (snakeEntity.firstChild) {
             snakeEntity.removeChild(snakeEntity.firstChild);
           }
-          
+
           // Возвращаем порошок в колбу
           powderInside.setAttribute("visible", "true");
-          
+
           // Сбрасываем состояние
           powderPlaced = false;
           reactionStarted = false;
@@ -794,25 +829,27 @@
         function handleResize() {
           if (window.innerWidth <= 768) {
             // Для мобильных устройств
-            document.querySelector('.info-panel').style.width = '90%';
-            document.querySelector('.instructions-panel').style.width = '90%';
-            document.querySelector('.ui-controls').style.width = '90%';
+            document.querySelector(".info-panel").style.width = "90%";
+            document.querySelector(".instructions-panel").style.width = "90%";
+            document.querySelector(".ui-controls").style.width = "90%";
           } else {
             // Для ПК
-            document.querySelector('.info-panel').style.width = '350px';
-            document.querySelector('.instructions-panel').style.width = '350px';
-            document.querySelector('.ui-controls').style.width = '300px';
+            document.querySelector(".info-panel").style.width = "350px";
+            document.querySelector(".instructions-panel").style.width = "350px";
+            document.querySelector(".ui-controls").style.width = "300px";
           }
         }
 
         // Вызываем функцию при загрузке и изменении размера окна
-        window.addEventListener('resize', handleResize);
+        window.addEventListener("resize", handleResize);
         handleResize();
-        
+
         // Добавляем обработчик события загрузки 3D-моделей
-        document.querySelector('a-scene').addEventListener('loaded', function () {
-          console.log('A-Frame scene loaded');
-        });
+        document
+          .querySelector("a-scene")
+          .addEventListener("loaded", function () {
+            console.log("A-Frame scene loaded");
+          });
       });
     </script>
   </body>
