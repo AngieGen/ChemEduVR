@@ -716,11 +716,13 @@
       }
     </style>
     <script>
-      AFRAME.registerComponent("mobile-camera-adjust", {
+      AFRAME.registerComponent("adaptive-camera", {
         init: function () {
-          if (window.innerWidth < 768) {
-            const cameraWrapper = this.el.parentEl;
-            cameraWrapper.setAttribute("position", "0 0 2");
+          const isPortrait = window.innerHeight > window.innerWidth;
+          if (isPortrait) {
+            const wrapper = this.el.parentEl;
+            wrapper.setAttribute("position", "0 0 2");
+            this.el.setAttribute("rotation", "-25 0 0");
           }
         },
       });
@@ -1213,17 +1215,7 @@
 
     <a-scene>
       <!-- Фон с обычной картинкой (не 360°) -->
-      <a-sky src="images/background.png"></a-sky>
-
-      <!-- Замена плоскости на пол в 3D сцене (можно убрать, если пол есть на фоне) -->
-      <a-plane
-        position="0 -0.5 0"
-        rotation="-90 0 0"
-        width="10"
-        height="10"
-        color="#8B4513"
-        visible="false"
-      ></a-plane>
+      <a-sky src="images/back.jpg" rotation="0 0 0"></a-sky>
 
       <!-- Лабораторный стол (3D модель) -->
       <a-entity
@@ -1272,7 +1264,7 @@
           rotation="90 0 0"
           scale="10 10 10"
           align="center"
-          color="#ffffff"
+          color="#000000"
         ></a-text>
       </a-entity>
 
@@ -1311,9 +1303,17 @@
         angle="45"
       ></a-light>
 
+      <a-plane
+        position="0 0 0"
+        rotation="-90 0 0"
+        width="10"
+        height="10"
+        color="#333333"
+      ></a-plane>
+
       <!-- Камера -->
       <a-entity position="0 0.1 0.7">
-        <a-camera look-controls wasd-controls mobile-camera-adjust></a-camera>
+        <a-camera adaptive-camera look-controls wasd-controls mobile-camera-adjust></a-camera>
       </a-entity>
     </a-scene>
 
