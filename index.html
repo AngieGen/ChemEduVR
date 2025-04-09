@@ -475,8 +475,8 @@
         <!-- Lesson Card 1 -->
         <div class="lesson-card">
           <img
-            src="https://i.ibb.co/0FbZGwX/pharaoh-snake.jpg"
-            alt="Фараонова змея"
+            src="https://www.shutterstock.com/shutterstock/videos/3530363455/thumb/11.jpg?ip=x480"
+            alt="Faraona čūska"
             class="lesson-card-img"
           />
           <div class="lesson-card-content">
@@ -495,8 +495,8 @@
         <!-- Lesson Card 2 -->
         <div class="lesson-card">
           <img
-            src="https://i.ibb.co/KqvLLGB/blue-bottle.jpg"
-            alt="Синий бутыль"
+            src="https://sun9-16.userapi.com/c636816/v636816324/d1a0/plNGN8G060I.jpg"
+            alt="Zilā pudele"
             class="lesson-card-img"
           />
           <div class="lesson-card-content">
@@ -506,17 +506,21 @@
               "Zilā pudele", kas demonstrē pārsteidzošās krāsu pārmaiņas, kratot
               šķīdumu.
             </p>
-            <a href="experiment2.html" class="lesson-button"
-              >Sākt eksperimentu</a
+            <a
+              href="javascript:void(0)"
+              class="lesson-button"
+              onclick="alert('Šī funkcija pagaidām ir izstrādes stadijā')"
             >
+              Izstrādē
+            </a>
           </div>
         </div>
 
         <!-- Lesson Card 3 -->
         <div class="lesson-card">
           <img
-            src="https://i.ibb.co/chc06wG/chemical-volcano.jpg"
-            alt="Химический вулкан"
+            src="https://sun9-16.userapi.com/impg/eMPvy3uTy8aNdGM9Dhk2NNGy2eRdw8erJIzTzA/49zy95X-KGQ.jpg?size=604x340&quality=96&sign=7c756eca0708f5c94cfb3f85f341596d&type=album"
+            alt="Ķīmiskais vulkāns"
             class="lesson-card-img"
           />
           <div class="lesson-card-content">
@@ -526,9 +530,13 @@
               ūdeņraža peroksīda katalītiskās sadalīšanās reakciju ar strauju
               skābekļa izdalīšanos.
             </p>
-            <a href="experiment3.html" class="lesson-button"
-              >Sākt eksperimentu</a
+            <a
+              href="javascript:void(0)"
+              class="lesson-button"
+              onclick="alert('Šī funkcija pagaidām ir izstrādes stadijā')"
             >
+              Izstrādē
+            </a>
           </div>
         </div>
       </div>
@@ -576,11 +584,11 @@
     </footer>
 
     <script>
-      // Добавление анимации молекул
+      // Molekulu animācijas pievienošana
       document.addEventListener("DOMContentLoaded", function () {
         const molecules = document.querySelectorAll(".molecule");
 
-        // Рандомные стартовые позиции для молекул
+        // Nejaušas sākuma pozīcijas molekulām
         molecules.forEach((molecule) => {
           const randomX = Math.floor(Math.random() * 100);
           const randomY = Math.floor(Math.random() * 100);
@@ -588,7 +596,7 @@
           molecule.style.top = `${randomY}%`;
         });
 
-        // Анимация карточек при скролле
+        // Kartīšu animācija ritināšanas laikā
         const lessonCards = document.querySelectorAll(".lesson-card");
 
         const observer = new IntersectionObserver(
@@ -610,18 +618,18 @@
           observer.observe(card);
         });
 
-        // Мобильное меню (гамбургер)
+        // Mobilā izvēlne (hamburgers)
         const createMobileMenu = () => {
-          // Проверяем ширину экрана
+          // Pārbaudām ekrāna platumu
           if (
             window.innerWidth <= 768 &&
             !document.querySelector(".mobile-menu-button")
           ) {
-            // Создаем кнопку гамбургер-меню
+            // Izveidojam hamburgera menu
             const navContainer = document.querySelector(".navbar-container");
             const navLinks = document.querySelector(".nav-links");
 
-            // Создаем бургер-кнопку
+            // Izveidojam burgera pogu
             const mobileMenuButton = document.createElement("div");
             mobileMenuButton.className = "mobile-menu-button";
             mobileMenuButton.innerHTML = `
@@ -630,7 +638,7 @@
             <div class="bar"></div>
           `;
 
-            // Добавляем стили
+            // Pievienojam stilus
             const style = document.createElement("style");
             style.innerHTML = `
             .mobile-menu-button {
@@ -702,15 +710,15 @@
 
             document.head.appendChild(style);
 
-            // Вставляем кнопку
+            // Ievietojam pogu
             navContainer.appendChild(mobileMenuButton);
 
-            // Добавляем обработчик клика
+            // Pievienojam klikšķa apstrādātāju
             mobileMenuButton.addEventListener("click", () => {
               mobileMenuButton.classList.toggle("mobile-menu-open");
               navLinks.classList.toggle("active");
 
-              // Блокируем/разблокируем скролл на странице
+              // Bloķējam/atbloķējam lapas ritināšanu
               if (navLinks.classList.contains("active")) {
                 document.body.style.overflow = "hidden";
               } else {
@@ -718,7 +726,7 @@
               }
             });
 
-            // Закрываем меню при клике на ссылку
+            // Aizveram izvēlni, noklikšķinot uz saites
             document.querySelectorAll(".nav-link").forEach((link) => {
               link.addEventListener("click", () => {
                 mobileMenuButton.classList.remove("mobile-menu-open");
@@ -729,10 +737,10 @@
           }
         };
 
-        // Инициализация мобильного меню
+        // Inicializējam mobilo izvēlni
         createMobileMenu();
 
-        // Пересоздаем меню при изменении размера экрана
+        // Pārveidojam izvēlni, mainoties ekrāna izmēram
         window.addEventListener("resize", createMobileMenu);
       });
     </script>

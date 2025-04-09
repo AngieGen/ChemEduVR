@@ -310,11 +310,44 @@
 
         init: function () {
           this.segments = [];
-          this.totalSegments = 40;
-          this.growthSpeed = 0.15;
-          this.growthTimer = 0;
+          this.totalSegments = 50;
           this.currentSegment = 0;
           this.isGrowing = false;
+
+          // Начальные координаты
+          this.lastX = 0;
+          this.lastY = 0.01; // Прямо на поверхности тарелки
+          this.lastZ = 0;
+
+          // Преимущественно горизонтальное направление роста
+          this.mainTiltDirection = Math.random() > 0.5 ? 1 : -1;
+
+          // Максимально уменьшаем вертикальную составляющую для движения по столу
+          const horizontalAngle = (Math.random() * 35 + 50) * (Math.PI / 180); // От 50 до 85 градусов от вертикали
+          const direction = Math.random() * Math.PI * 2; // Случайное направление в горизонтальной плоскости
+
+          // Направление с преобладанием горизонтальной составляющей
+          this.direction = {
+            x: Math.sin(horizontalAngle) * Math.cos(direction),
+            y: Math.cos(horizontalAngle) * 0.3, // Сильно уменьшаем вертикальный рост
+            z: Math.sin(horizontalAngle) * Math.sin(direction),
+          };
+
+          // Нормализуем вектор
+          const length = Math.sqrt(
+            this.direction.x * this.direction.x +
+              this.direction.y * this.direction.y +
+              this.direction.z * this.direction.z
+          );
+
+          this.direction.x /= length;
+          this.direction.y /= length;
+          this.direction.z /= length;
+
+          this.twistFactor = 0;
+          this.windingAngle = 0;
+          this.segmentCount = 0;
+          this.tableContact = true; // Флаг контакта с поверхностью
         },
 
         update: function () {
@@ -326,24 +359,94 @@
         startReaction: function () {
           this.isGrowing = true;
 
-          // Добавляем эффект огня в начале
+          // Добавляем начальный материал на тарелке
+          this.addInitialPowder();
+
+          // Добавляем начальный эффект огня
           const fire = document.createElement("a-entity");
-          fire.setAttribute("position", "0 0.02 0");
+          fire.setAttribute("position", "0 0 0");
           fire.setAttribute("particle-system", {
             color: "#ff8822, #ffaa22, #ff4400",
-            size: 0.2,
-            maxAge: 0.5,
-            velocityValue: "0 0.5 0",
-            velocitySpread: "0.2 0.2 0.2",
+            size: 0.3,
+            maxAge: 0.8,
+            velocityValue: "0 0.7 0",
+            velocitySpread: "0.3 0.3 0.3",
             acceleration: "0 0 0",
-            particleCount: 20,
-            texture:
-              "https://cdn.glitch.com/a69681d6-2900-4edc-87e6-caee8d96c7a9%2Fparticle.png?1534378095877",
+            particleCount: 35,
+            opacity: 0.9,
+            blending: "additive",
           });
           this.el.appendChild(fire);
 
-          // Запускаем создание сегментов "змеи"
-          this.growthInterval = setInterval(() => this.growSnake(), 100);
+          // Добавляем свечение от огня
+          const fireLight = document.createElement("a-entity");
+          fireLight.setAttribute("light", {
+            type: "point",
+            color: "#ff5500",
+            intensity: 1.5,
+            distance: 0.5,
+          });
+          fireLight.setAttribute("position", "0 -0.05 0");
+          this.el.appendChild(fireLight);
+
+          // Запускаем создание "змеи"
+          this.growthInterval = setInterval(() => this.growSnake(), 200);
+
+          // Удаляем огонь через некоторое время
+          setTimeout(() => {
+            if (fire.parentNode) {
+              fire.parentNode.removeChild(fire);
+            }
+            if (fireLight.parentNode) {
+              fireLight.parentNode.removeChild(fireLight);
+            }
+          }, 10000);
+        },
+
+        // Добавляем начальный порошок на тарелке
+        addInitialPowder: function () {
+          // Создаем базовый слой черного порошка на тарелке
+          const basePowder = document.createElement("a-entity");
+          basePowder.setAttribute("geometry", {
+            primitive: "cylinder",
+            height: 0.025,
+            radius: 0.05,
+            segmentsRadial: 12,
+            segmentsHeight: 1,
+          });
+
+          basePowder.setAttribute("material", {
+            color: "#1e1e1e",
+            roughness: 0.9,
+            metalness: 0.1,
+          });
+
+          basePowder.setAttribute("position", "0 -0.01 0");
+          this.el.appendChild(basePowder);
+
+          // Добавляем неровности к порошку
+          for (let i = 0; i < 8; i++) {
+            const powderBump = document.createElement("a-entity");
+            const angle = Math.random() * Math.PI * 2;
+            const distance = Math.random() * 0.04;
+            const bumpSize = 0.005 + Math.random() * 0.005;
+
+            powderBump.setAttribute("geometry", {
+              primitive: "sphere",
+              radius: bumpSize,
+            });
+
+            powderBump.setAttribute("material", {
+              color: "#262626",
+              roughness: 1.0,
+            });
+
+            const xPos = Math.cos(angle) * distance;
+            const zPos = Math.sin(angle) * distance;
+
+            powderBump.setAttribute("position", `${xPos} 0.006 ${zPos}`);
+            this.el.appendChild(powderBump);
+          }
         },
 
         growSnake: function () {
@@ -352,86 +455,216 @@
             return;
           }
 
-          // Создаем новый сегмент "змеи"
-          const segmentHeight = 0.05 + Math.random() * 0.05;
-          const topRadius = 0.05 + Math.random() * 0.03;
-          const bottomRadius = 0.05 + Math.random() * 0.03;
+          // Для первого сегмента создаем его прямо на порошке
+          const isFirstSegment = this.currentSegment === 0;
 
-          const segment = document.createElement("a-entity");
-          segment.setAttribute("geometry", {
-            primitive: "cylinder",
-            height: segmentHeight,
-            radius: topRadius,
-            "segments-radial": 16,
-          });
-          segment.setAttribute("material", {
-            color: "#333333",
-            roughness: 0.7,
-            metalness: 0.2,
-          });
+          // Постепенно меняем направление роста с сохранением контакта с поверхностью
+          if (!isFirstSegment) {
+            // Увеличиваем фактор закручивания
+            this.twistFactor += 0.25 + Math.random() * 0.3;
 
-          // Определяем позицию нового сегмента
-          let yPos = 0.02;
-          let lastPos = { x: 0, y: 0.02, z: 0 };
+            // Постепенно увеличиваем горизонтальное движение
+            const horizontalFactor = Math.min(
+              0.95,
+              0.5 + this.currentSegment * 0.01
+            );
 
-          if (this.segments.length > 0) {
-            const lastSegment = this.segments[this.segments.length - 1];
-            const lastPosition = lastSegment.getAttribute("position");
-            const lastGeometry = lastSegment.getAttribute("geometry");
-            yPos = lastPosition.y + lastGeometry.height / 2 + segmentHeight / 2;
-            lastPos = lastPosition;
+            // Генерируем новое направление с преобладанием горизонтальной составляющей
+            const twistX = Math.sin(this.twistFactor) * 0.4;
+            const twistZ = Math.cos(this.twistFactor) * 0.4;
+
+            // Обновляем направление, сохраняя контакт с поверхностью
+            this.direction = {
+              x: twistX * horizontalFactor,
+              y: Math.max(0.05, 0.3 - this.currentSegment * 0.1), // Уменьшаем вертикальную составляющую
+              z: twistZ * horizontalFactor,
+            };
+
+            // Проверяем, не слишком ли низко опустилась змея
+            if (this.lastY < 0.02) {
+              this.direction.y = Math.max(0.1, this.direction.y); // Корректируем, чтобы не уходила под стол
+              this.tableContact = true;
+            }
+
+            // Нормализуем вектор
+            const length = Math.sqrt(
+              this.direction.x * this.direction.x +
+                this.direction.y * this.direction.y +
+                this.direction.z * this.direction.z
+            );
+
+            this.direction.x /= length;
+            this.direction.y /= length;
+            this.direction.z /= length;
+
+            // Добавляем случайные вариации
+            this.direction.x += (Math.random() - 0.5) * 0.1;
+            this.direction.z += (Math.random() - 0.5) * 0.1;
+
+            // Финальная нормализация
+            const finalLength = Math.sqrt(
+              this.direction.x * this.direction.x +
+                this.direction.y * this.direction.y +
+                this.direction.z * this.direction.z
+            );
+
+            this.direction.x /= finalLength;
+            this.direction.y /= finalLength;
+            this.direction.z /= finalLength;
           }
 
-          // Добавляем случайное смещение для извилистости
-          const xOffset = (Math.random() - 0.5) * 0.02;
-          const zOffset = (Math.random() - 0.5) * 0.02;
+          // Создаем новый сегмент змеи
+          const segment = document.createElement("a-entity");
+          // Для первого сегмента делаем его шире
+          const segmentSize = isFirstSegment
+            ? 0.04
+            : 0.025 + Math.random() * 0.01;
+
+          // Меняем форму в зависимости от контакта с поверхностью
+          const geometry = this.tableContact
+            ? {
+                primitive: "sphere",
+                radius: segmentSize,
+                segmentsWidth: 8,
+                segmentsHeight: 8,
+              }
+            : {
+                primitive: "sphere",
+                radius: segmentSize,
+                segmentsWidth: 8,
+                segmentsHeight: 8,
+              };
+
+          segment.setAttribute("geometry", geometry);
+
+          // Цвет темно-серый или черный с вариациями
+          const colorIndex = Math.floor(Math.random() * 4);
+          const baseColors = ["#1a1a1a", "#262626", "#1a0f0f", "#1e1e1e"];
+          const baseColor = baseColors[colorIndex];
+
+          segment.setAttribute("material", {
+            color: baseColor,
+            roughness: 0.9,
+            metalness: 0.1,
+          });
+
+          // Расчет новой позиции
+          const segmentHeight = 0.025 + Math.random() * 0.01;
+
+          // Первый сегмент прямо на тарелке
+          let newX, newY, newZ;
+          if (isFirstSegment) {
+            newX = 0;
+            newY = 0;
+            newZ = 0;
+          } else {
+            newX = this.lastX + this.direction.x * segmentHeight;
+            newY = this.lastY + this.direction.y * segmentHeight;
+            newZ = this.lastZ + this.direction.z * segmentHeight;
+          }
 
           segment.setAttribute("position", {
-            x: lastPos.x + xOffset,
-            y: yPos,
-            z: lastPos.z + zOffset,
+            x: newX,
+            y: newY,
+            z: newZ,
           });
 
-          // Добавляем небольшой случайный наклон
-          segment.setAttribute("rotation", {
-            x: (Math.random() - 0.5) * 10,
-            y: 0,
-            z: (Math.random() - 0.5) * 10,
-          });
+          // Добавляем неровности для пористой текстуры
+          for (let i = 0; i < 3 + Math.floor(Math.random() * 3); i++) {
+            const bump = document.createElement("a-entity");
+            const bumpSize = 0.005 + Math.random() * 0.008;
+
+            // Случайное положение на поверхности сегмента
+            const phi = Math.random() * Math.PI * 2;
+            const theta = Math.random() * Math.PI;
+            const radius = segmentSize * 0.8;
+
+            const xPos = radius * Math.sin(theta) * Math.cos(phi);
+            const yPos = radius * Math.sin(theta) * Math.sin(phi);
+            const zPos = radius * Math.cos(theta);
+
+            bump.setAttribute("geometry", {
+              primitive: "sphere",
+              radius: bumpSize,
+            });
+
+            // Цвет неровностей - немного темнее или светлее основного
+            const bumpColor = this.adjustColor(
+              baseColor,
+              Math.random() > 0.5 ? 15 : -15
+            );
+
+            bump.setAttribute("material", {
+              color: bumpColor,
+              roughness: 1.0,
+              metalness: 0.0,
+            });
+
+            bump.setAttribute("position", `${xPos} ${yPos} ${zPos}`);
+            segment.appendChild(bump);
+          }
+
+          // Соединяем текущий сегмент с предыдущим для непрерывности (кроме первого)
+          if (!isFirstSegment && this.segments.length > 0) {
+            const connector = document.createElement("a-entity");
+            const prevSegment = this.segments[this.segments.length - 1];
+            const prevPos = prevSegment.getAttribute("position");
+
+            const midX = (prevPos.x + newX) / 2;
+            const midY = (prevPos.y + newY) / 2;
+            const midZ = (prevPos.z + newZ) / 2;
+
+            connector.setAttribute("geometry", {
+              primitive: "sphere",
+              radius: segmentSize * 0.85,
+            });
+
+            connector.setAttribute("position", {
+              x: midX,
+              y: midY,
+              z: midZ,
+            });
+
+            connector.setAttribute("material", {
+              color: baseColor,
+              roughness: 0.9,
+              metalness: 0.1,
+            });
+
+            this.el.appendChild(connector);
+          }
+
+          // Обновляем последнюю позицию
+          this.lastX = newX;
+          this.lastY = newY;
+          this.lastZ = newZ;
 
           this.el.appendChild(segment);
           this.segments.push(segment);
           this.currentSegment++;
 
           // Добавляем эффект дыма
-          if (this.currentSegment % 3 === 0) {
-            this.addSmoke(lastPos.x + xOffset, yPos, lastPos.z + zOffset);
+          if (this.currentSegment % 3 === 0 || this.currentSegment < 5) {
+            this.addSmoke(newX, newY, newZ);
           }
         },
 
-        addSmoke: function (x, y, z) {
-          const smoke = document.createElement("a-entity");
-          smoke.setAttribute("position", `${x} ${y} ${z}`);
-          smoke.setAttribute("particle-system", {
-            color: "#aaaaaa, #888888",
-            size: 0.3,
-            maxAge: 1.5,
-            velocityValue: "0 0.3 0",
-            velocitySpread: "0.1 0.1 0.1",
-            acceleration: "0 0 0",
-            particleCount: 5,
-            opacity: 0.5,
-            texture:
-              "https://cdn.glitch.com/a69681d6-2900-4edc-87e6-caee8d96c7a9%2Fparticle.png?1534378095877",
-          });
-          this.el.appendChild(smoke);
+        // Функция для регулировки яркости hex-цвета
+        adjustColor: function (hex, amount) {
+          // Конвертируем hex в rgb
+          let r = parseInt(hex.substring(1, 3), 16);
+          let g = parseInt(hex.substring(3, 5), 16);
+          let b = parseInt(hex.substring(5, 7), 16);
 
-          // Удаляем дым через некоторое время для оптимизации
-          setTimeout(() => {
-            if (smoke.parentNode) {
-              smoke.parentNode.removeChild(smoke);
-            }
-          }, 3000);
+          // Регулируем яркость
+          r = Math.min(255, Math.max(0, r + amount));
+          g = Math.min(255, Math.max(0, g + amount));
+          b = Math.min(255, Math.max(0, b + amount));
+
+          // Конвертируем обратно в hex
+          return (
+            "#" + ((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1)
+          );
         },
 
         remove: function () {
