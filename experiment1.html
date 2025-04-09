@@ -4,8 +4,10 @@
     <meta charset="UTF-8" />
     <meta
       name="viewport"
-      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover"
     />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="mobile-web-app-capable" content="yes" />
     <title>ChemEdu VR - Faraona čūska</title>
     <link
       href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap"
@@ -300,8 +302,428 @@
         opacity: 0;
         transition: opacity 0.5s;
       }
+
+      /* Стили для модальных окон и инструкций */
+
+      /* Затемнение фона при активном модальном окне */
+      .modal-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.7);
+        z-index: 999;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+      }
+
+      /* Стили для информационной панели в качестве модального окна */
+      .info-panel.modal {
+        position: relative;
+        top: auto;
+        left: auto;
+        max-width: 500px;
+        width: 90%;
+        background: rgba(0, 0, 0, 0.9);
+        border-radius: 10px;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        padding: 25px;
+        margin: 0;
+        z-index: 1000;
+        transform: translateY(0);
+        transition: transform 0.3s ease, opacity 0.3s ease;
+        opacity: 1;
+      }
+
+      .info-panel.modal h2 {
+        color: #4285f4;
+        font-size: 1.5rem;
+        margin-bottom: 15px;
+        text-align: center;
+      }
+
+      .info-panel.modal p {
+        margin-bottom: 15px;
+        line-height: 1.5;
+      }
+
+      /* Кнопка "Понятно" */
+      .understand-button {
+        display: block;
+        width: 100%;
+        background-color: #4285f4;
+        color: white;
+        border: none;
+        padding: 12px;
+        font-size: 16px;
+        border-radius: 4px;
+        cursor: pointer;
+        margin-top: 20px;
+        transition: background-color 0.3s;
+        font-weight: 500;
+      }
+
+      .understand-button:hover {
+        background-color: #3b77db;
+      }
+
+      /* Обычное состояние информационной панели (после закрытия модального окна) */
+      .info-panel.regular {
+        position: absolute;
+        top: 80px;
+        right: 20px;
+        left: auto;
+        max-width: 350px;
+        background: rgba(0, 0, 0, 0.7);
+        padding: 15px;
+        border-radius: 8px;
+      }
+
+      /* Кнопка информации для повторного открытия панели */
+      .info-button {
+        position: absolute;
+        top: 80px;
+        right: 20px;
+        width: 40px;
+        height: 40px;
+        background-color: #4285f4;
+        color: white;
+        border: none;
+        border-radius: 50%;
+        font-size: 20px;
+        font-weight: bold;
+        cursor: pointer;
+        z-index: 100;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+      }
+
+      .info-button:hover {
+        background-color: #3b77db;
+      }
+
+      /* Обновленные стили для панели инструкций */
+      .instructions-panel {
+        position: absolute;
+        bottom: 80px;
+        left: 20px;
+        background: rgba(0, 0, 0, 0.85);
+        color: white;
+        padding: 20px;
+        border-radius: 8px;
+        max-width: 400px;
+        z-index: 100;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+        transition: opacity 0.3s ease;
+      }
+
+      .instructions-panel h3 {
+        margin-top: 0;
+        color: #4285f4;
+        font-size: 1.3rem;
+        margin-bottom: 12px;
+      }
+
+      .instructions-panel p {
+        margin-bottom: 10px;
+        line-height: 1.5;
+      }
+
+      /* Стили для кнопок внутри панелей */
+      .instructions-panel .control-button {
+        width: 100%;
+        margin-top: 15px;
+        transition: all 0.3s ease;
+      }
+
+      /* Панель завершения */
+      #completion-panel .control-button {
+        flex: 1;
+      }
+
+      /* Адаптивность для различных экранов */
+      @media (max-width: 768px) {
+        .info-panel.modal {
+          width: 95%;
+          padding: 20px;
+        }
+
+        .instructions-panel {
+          max-width: 90%;
+          left: 50%;
+          transform: translateX(-50%);
+          padding: 15px;
+        }
+      }
+
+      @media (max-width: 480px) {
+        .info-panel.modal {
+          padding: 15px;
+        }
+
+        .info-panel.modal h2 {
+          font-size: 1.3rem;
+        }
+
+        .instructions-panel h3 {
+          font-size: 1.2rem;
+        }
+
+        .instructions-panel .control-button {
+          padding: 10px;
+          font-size: 14px;
+        }
+      }
+      /* Общие улучшения для мобильной версии */
+      @media (max-width: 768px) {
+        /* Более гибкая настройка для модального окна */
+        .info-panel.modal {
+          width: 90%;
+          max-height: 80vh;
+          overflow-y: auto;
+          padding: 20px;
+          font-size: 0.95rem;
+        }
+
+        /* Улучшение читаемости текста */
+        .info-panel.modal p,
+        .instructions-panel p {
+          font-size: 0.95rem;
+          line-height: 1.6;
+        }
+
+        /* Увеличение высоты кнопок для лучшей доступности на мобильных */
+        .understand-button,
+        .control-button {
+          min-height: 50px;
+          padding: 12px 15px;
+        }
+
+        /* Инструкции должны быть четко видны */
+        .instructions-panel {
+          width: 90%;
+          max-width: none;
+          left: 50%;
+          transform: translateX(-50%);
+          padding: 20px;
+          bottom: 100px;
+        }
+
+        /* Кнопка информации - более заметная */
+        .info-button {
+          width: 45px;
+          height: 45px;
+          top: 70px;
+        }
+
+        /* Панель информации при нажатии на кнопку i */
+        .info-panel.regular {
+          width: 90%;
+          left: 50%;
+          transform: translateX(-50%);
+          top: 120px;
+        }
+
+        /* Панель реакции должна быть хорошо видна */
+        #reaction-panel {
+          width: 90%;
+          top: 70px;
+          left: 50%;
+          transform: translateX(-50%);
+        }
+
+        /* Кнопки на завершающей панели */
+        #completion-panel .control-button {
+          font-size: 0.9rem;
+        }
+      }
+
+      /* Специальные настройки для очень маленьких экранов */
+      @media (max-width: 480px) {
+        /* Уменьшаем размер текста в модальном окне */
+        .info-panel.modal h2 {
+          font-size: 1.3rem;
+        }
+
+        .info-panel.modal p,
+        .instructions-panel p,
+        #reaction-panel p {
+          font-size: 0.9rem;
+          line-height: 1.5;
+        }
+
+        /* Заголовки панелей */
+        .instructions-panel h3,
+        #reaction-panel h3,
+        #completion-panel h3 {
+          font-size: 1.1rem;
+        }
+
+        /* Кнопки - меньше padding, меньше шрифт */
+        .understand-button,
+        .control-button {
+          font-size: 0.95rem;
+          padding: 10px;
+        }
+
+        /* Панель инструкций ближе к нижнему краю */
+        .instructions-panel {
+          bottom: 80px;
+          padding: 15px;
+        }
+
+        /* Панель завершения - более компактная */
+        #completion-panel {
+          padding: 15px;
+        }
+
+        /* Кнопки в завершающей панели - вертикально на очень маленьких экранах */
+        #completion-panel div {
+          flex-direction: column;
+          gap: 10px;
+        }
+
+        /* A-Frame сцена - настройка пропорций */
+        a-scene {
+          height: 70vh !important;
+        }
+      }
+
+      /* Ландшафтный режим на мобильных */
+      @media (max-width: 900px) and (orientation: landscape) {
+        /* Особая настройка для ландшафтного режима */
+        .instructions-panel {
+          bottom: 20px;
+          max-width: 50%;
+          left: 20px;
+          transform: none;
+        }
+
+        #reaction-panel {
+          max-width: 40%;
+          right: 20px;
+          left: auto;
+          transform: none;
+        }
+
+        a-scene {
+          height: 80vh !important;
+        }
+
+        .info-panel.modal {
+          max-width: 70%;
+          max-height: 80vh;
+        }
+      }
+
+      /* Улучшение доступности кнопок в A-Frame сцене */
+      .a-enter-vr {
+        position: absolute;
+        bottom: 10px;
+        right: 10px;
+      }
+
+      /* Улучшения для высоких телефонов */
+      @media (min-height: 800px) and (max-width: 480px) {
+        .instructions-panel {
+          bottom: 120px;
+        }
+
+        #reaction-panel {
+          top: 100px;
+        }
+      }
+
+      /* Глобальные улучшения для сенсорных устройств */
+      @media (hover: none) {
+        .control-button,
+        .understand-button {
+          /* Увеличение области нажатия для сенсорных устройств */
+          padding: 15px;
+          margin: 5px 0;
+        }
+
+        .option label {
+          padding: 5px 0;
+        }
+
+        .info-button {
+          padding: 5px;
+        }
+      }
+
+      /* Улучшения для очень маленьких экранов */
+      @media (max-width: 320px) {
+        .navbar-container {
+          padding: 0.4rem 1%;
+        }
+
+        .logo {
+          font-size: 1.3rem;
+        }
+
+        .info-panel.modal h2,
+        .instructions-panel h3,
+        #reaction-panel h3,
+        #completion-panel h3 {
+          font-size: 1rem;
+        }
+
+        .info-panel.modal p,
+        .instructions-panel p,
+        #reaction-panel p {
+          font-size: 0.85rem;
+        }
+
+        .understand-button,
+        .control-button {
+          font-size: 0.9rem;
+          padding: 8px;
+        }
+      }
+
+      /* Исправление для z-index и стека контекста */
+      .modal-overlay {
+        z-index: 1001; /* Выше всего остального */
+      }
+
+      .info-button {
+        z-index: 1000; /* Выше инструкций */
+      }
+
+      .instructions-panel,
+      #reaction-panel,
+      #completion-panel {
+        z-index: 999;
+      }
+
+      /* Настройки для улучшения удобства использования вне зависимости от устройства */
+      .instructions-panel,
+      #reaction-panel,
+      #completion-panel {
+        transition: opacity 0.3s ease, transform 0.3s ease;
+      }
+
+      /* Исправление для видимости VR-кнопки */
+      .a-enter-vr-button {
+        position: fixed;
+        bottom: 5px;
+        right: 5px;
+      }
     </style>
     <script>
+      AFRAME.registerComponent("mobile-camera-adjust", {
+        init: function () {
+          if (window.innerWidth < 768) {
+            const cameraWrapper = this.el.parentEl;
+            cameraWrapper.setAttribute("position", "0 0 2");
+          }
+        },
+      });
       // Компонент для создания и анимации "Фараоновой змеи"
       AFRAME.registerComponent("pharaoh-snake", {
         schema: {
@@ -684,7 +1106,36 @@
       </div>
     </nav>
 
-    <div class="info-panel">
+    <!-- Замените текущую info-panel на следующий код -->
+
+    <!-- Затемнение и модальное окно с информацией -->
+    <div id="modal-overlay" class="modal-overlay">
+      <div id="info-panel-modal" class="info-panel modal">
+        <h2>Faraona čūska</h2>
+        <p>
+          Klasiskais ķīmijas eksperiments, kurā dzīvsudraba (II) tiocianāta
+          (Hg(SCN)₂) sadedzināšanas rezultātā notiek eksotermiska sadalīšanās
+          reakcija, veidojot porainu masu, kas atgādina čūsku.
+        </p>
+        <p>Reakcija: 2Hg(SCN)₂ → 2HgS + CS₂ + C₃N₄</p>
+        <p>
+          UZMANĪBU: Reālā laboratorijā šis ir bīstams eksperiments, jo
+          dzīvsudraba savienojumi ir toksiski, un reakcijas laikā izdalās
+          indīgas gāzes!
+        </p>
+        <button id="understand-button" class="understand-button">
+          Skaidrs
+        </button>
+      </div>
+    </div>
+
+    <!-- Кнопка для повторного открытия информации -->
+    <button id="info-button" class="info-button" style="display: none">
+      i
+    </button>
+
+    <!-- Обычная информационная панель (будет скрыта изначально) -->
+    <div id="info-panel" class="info-panel regular" style="display: none">
       <h2>Faraona čūska</h2>
       <p>
         Klasiskais ķīmijas eksperiments, kurā dzīvsudraba (II) tiocianāta
@@ -698,30 +1149,63 @@
       </p>
     </div>
 
-    <div class="instructions-panel">
-      <h3 id="current-step">1. solis</h3>
-      <p id="step-description">
-        Novietojiet kolbu ar dzīvsudraba (II) tiocianātu uz keramiskā šķīvja
+    <div
+      id="instructions-panel"
+      class="instructions-panel"
+      style="display: none"
+    >
+      <h3 id="current-step-title">1. solis</h3>
+      <p id="current-step-description">
+        Novietojiet kolbu ar dzīvsudraba (II) tiocianātu uz keramiskā šķīvja.
+        Šim nolūkam jāizber pulveris no kolbas uz šķīvja.
+      </p>
+      <button id="step1-button" class="control-button" style="margin-top: 15px">
+        Pārvietot kolbu ar pulveri uz šķīvja
+      </button>
+    </div>
+
+    <!-- Панель для шага 2 -->
+    <div id="step2-panel" class="instructions-panel" style="display: none">
+      <h3>2. solis</h3>
+      <p>
+        Lai sāktu reakciju, jums jāaizdedzina dzīvsudraba (II) tiocianāta
+        pulveris, kas atrodas uz šķīvja. Izmantojiet šķiltavas, lai to izdarītu.
+      </p>
+      <button id="step2-button" class="control-button" style="margin-top: 15px">
+        Aizdedzināt pulveri
+      </button>
+    </div>
+
+    <!-- Панель объяснения реакции -->
+    <div
+      id="reaction-panel"
+      class="instructions-panel"
+      style="display: none; top: 80px; left: 20px; bottom: auto"
+    >
+      <h3>Reakcijas process</h3>
+      <p>Notiek dzīvsudraba (II) tiocianāta termiskā sadalīšanās:</p>
+      <p style="font-weight: bold; margin: 10px 0">
+        2Hg(SCN)₂ → 2HgS + CS₂ + C₃N₄
+      </p>
+      <p>
+        Veidojas dzīvsudraba sulfīds (HgS), oglekļa disulfīds (CS₂), un
+        ciānogēns (C₃N₄). Reakcijas laikā izdalās siltums (eksotermiska) un
+        gāzes, kas veido porainu struktūru.
       </p>
     </div>
 
-    <div class="reaction-progress" style="display: none">
-      <h3>Reakcijas progress</h3>
-      <div class="progress-container">
-        <div id="reaction-progress-bar" class="progress-bar"></div>
+    <!-- Панель завершения эксперимента -->
+    <div id="completion-panel" class="instructions-panel" style="display: none">
+      <h3>Eksperiments pabeigts</h3>
+      <p>
+        Jūs esat veiksmīgi pabeiguši "Faraona čūska" eksperimentu. Tagad jūs
+        varat pārbaudīt savas zināšanas, izpildot testu par šo eksperimentu, vai
+        atkārtot eksperimentu, lai labāk izprastu procesu.
+      </p>
+      <div style="display: flex; gap: 10px; margin-top: 15px">
+        <button id="restart-button" class="control-button">Sākt vēlreiz</button>
+        <button id="test-button" class="control-button">Pildīt testu</button>
       </div>
-    </div>
-
-    <div class="ui-controls">
-      <button id="place-powder" class="control-button">
-        Pārvietot kolbu ar pulveri uz šķīvja
-      </button>
-      <button id="ignite-powder" class="control-button" disabled>
-        Aizdedzināt pulveri
-      </button>
-      <button id="reset-experiment" class="control-button" disabled>
-        Atiestatīt eksperimentu
-      </button>
     </div>
 
     <!-- Элемент для визуализации порошка при его пересыпании из колбы -->
@@ -822,48 +1306,91 @@
       <a-light type="directional" position="1 1 1" intensity="0.6"></a-light>
       <a-light
         type="spot"
-        position="0 1.5 -1"
+        position="0 1.5 1"
         intensity="0.8"
         angle="45"
       ></a-light>
 
       <!-- Камера -->
       <a-entity position="0 0.1 0.7">
-        <a-camera look-controls wasd-controls></a-camera>
+        <a-camera look-controls wasd-controls mobile-camera-adjust></a-camera>
       </a-entity>
     </a-scene>
 
     <script>
+      // Новая логика работы с панелями эксперимента
+
       document.addEventListener("DOMContentLoaded", function () {
-        // Получаем ссылки на элементы интерфейса
-        const placePowderButton = document.getElementById("place-powder");
-        const ignitePowderButton = document.getElementById("ignite-powder");
-        const resetExperimentButton =
-          document.getElementById("reset-experiment");
-        const stepTitle = document.getElementById("current-step");
-        const stepDescription = document.getElementById("step-description");
-        const reactionProgress = document.querySelector(".reaction-progress");
-        const progressBar = document.getElementById("reaction-progress-bar");
-        const powderAnimation = document.getElementById("powder-animation");
+        // Получаем ссылки на элементы интерфейса для модального окна
+        const modalOverlay = document.getElementById("modal-overlay");
+        const infoModal = document.getElementById("info-panel-modal");
+        const understandButton = document.getElementById("understand-button");
+        const infoButton = document.getElementById("info-button");
+        const infoPanel = document.getElementById("info-panel");
+
+        // Получаем ссылки на панели шагов
+        const instructionsPanel = document.getElementById("instructions-panel");
+        const step1Button = document.getElementById("step1-button");
+        const step2Panel = document.getElementById("step2-panel");
+        const step2Button = document.getElementById("step2-button");
+        const reactionPanel = document.getElementById("reaction-panel");
+        const completionPanel = document.getElementById("completion-panel");
+        const restartButton = document.getElementById("restart-button");
+        const testButton = document.getElementById("test-button");
 
         // Получаем ссылки на 3D объекты
         const flaskContainer = document.getElementById(
           "mercury-thiocyanate-container"
         );
-        const flaskElement = document.getElementById("flask");
         const powderInside = document.getElementById("powder-inside");
         const powderOnPlate = document.getElementById("powder-on-plate");
         const lighter = document.getElementById("lighter");
         const snakeEntity = document.getElementById("snake-entity");
-        const ceramicPlate = document.getElementById("ceramic-plate");
 
-        // Флаги состояния эксперимента
-        let powderPlaced = false;
-        let reactionStarted = false;
-        let reactionCompleted = false;
+        // Обработчик кнопки "Понятно" в начальном модальном окне
+        understandButton.addEventListener("click", function () {
+          // Скрываем модальное окно с плавной анимацией
+          infoModal.style.transform = "translateY(-20px)";
+          infoModal.style.opacity = "0";
 
-        // Функция для перемещения колбы на тарелку и высыпания порошка
-        placePowderButton.addEventListener("click", function () {
+          setTimeout(function () {
+            modalOverlay.style.display = "none";
+
+            // Показываем кнопку информации и первую панель с инструкциями
+            infoButton.style.display = "flex";
+            instructionsPanel.style.display = "block";
+          }, 300);
+        });
+
+        // Обработчик кнопки информации
+        infoButton.addEventListener("click", function () {
+          // Переключаем видимость обычной информационной панели
+          if (infoPanel.style.display === "none") {
+            infoPanel.style.display = "block";
+            infoButton.innerHTML = "×";
+          } else {
+            infoPanel.style.display = "none";
+            infoButton.innerHTML = "i";
+          }
+        });
+
+        // Предотвращаем закрытие модального окна при клике на само окно
+        infoModal.addEventListener("click", function (event) {
+          event.stopPropagation();
+        });
+
+        // Опциональное закрытие модального окна при клике на затемненный фон
+        modalOverlay.addEventListener("click", function (event) {
+          if (event.target === modalOverlay) {
+            understandButton.click();
+          }
+        });
+
+        // ШАГ 1: Обработчик для кнопки "Pārvietot kolbu"
+        step1Button.addEventListener("click", function () {
+          // Скрываем панель инструкций
+          instructionsPanel.style.display = "none";
+
           // Анимируем перемещение колбы
           flaskContainer.setAttribute("animation", {
             property: "position",
@@ -908,21 +1435,20 @@
                   easing: "easeOutQuad",
                 });
 
-                // Обновляем состояние
-                powderPlaced = true;
-                placePowderButton.disabled = true;
-                ignitePowderButton.disabled = false;
-
-                // Обновляем инструкции
-                stepTitle.textContent = "2. solis";
-                stepDescription.textContent = "Aizdedziniet pulveri uz šķīvja";
+                // После возвращения колбы показываем вторую панель
+                setTimeout(function () {
+                  step2Panel.style.display = "block";
+                }, 500);
               }, 1000);
             }, 1000);
           }, 1000);
         });
 
-        // функции для поджигания порошка
-        ignitePowderButton.addEventListener("click", function () {
+        // ШАГ 2: Обработчик для кнопки "Aizdedzināt pulveri"
+        step2Button.addEventListener("click", function () {
+          // Скрываем панель инструкций для шага 2
+          step2Panel.style.display = "none";
+
           // Анимируем перемещение зажигалки к порошку
           lighter.setAttribute("animation", {
             property: "position",
@@ -999,91 +1525,225 @@
               if (flame && flame.parentNode) {
                 flame.parentNode.removeChild(flame);
               }
+
+              // Показываем панель с объяснением реакции
+              reactionPanel.style.display = "block";
             }, 1000);
 
-            // Обновляем состояние
-            reactionStarted = true;
-            ignitePowderButton.disabled = true;
-            resetExperimentButton.disabled = false;
+            // Показываем панель завершения через время, равное времени реакции
+            setTimeout(function () {
+              // Скрываем панель объяснения
+              reactionPanel.style.display = "none";
 
-            // Обновляем инструкции
-            stepTitle.textContent = "3. solis";
-            stepDescription.textContent =
-              "Novērojiet sadalīšanās reakciju. Pēc beigšanas nospiediet 'Atiestatīt eksperimentu', lai atkārtotu";
-
-            // Показываем прогресс реакции
-            reactionProgress.style.display = "block";
-
-            // Анимируем прогресс реакции
-            let progress = 0;
-            const progressInterval = setInterval(function () {
-              progress += 2.5;
-              progressBar.style.width = progress + "%";
-
-              if (progress >= 100) {
-                clearInterval(progressInterval);
-                reactionCompleted = true;
-              }
-            }, 1000); // Полная анимация займет около 40 секунд
+              // Показываем панель завершения
+              completionPanel.style.display = "block";
+            }, 20000); // 20 секунд - примерное время реакции
           }, 1000);
         });
 
-        // Функция для сброса эксперимента
-        resetExperimentButton.addEventListener("click", function () {
-          // Удаляем все сегменты "змеи"
-          while (snakeEntity.firstChild) {
-            snakeEntity.removeChild(snakeEntity.firstChild);
-          }
-
-          // Возвращаем порошок в колбу
-          powderInside.setAttribute("visible", "true");
-
-          // Сбрасываем состояние
-          powderPlaced = false;
-          reactionStarted = false;
-          reactionCompleted = false;
-
-          // Сбрасываем интерфейс
-          placePowderButton.disabled = false;
-          ignitePowderButton.disabled = true;
-          resetExperimentButton.disabled = true;
-
-          // Сбрасываем прогресс
-          reactionProgress.style.display = "none";
-          progressBar.style.width = "0%";
-
-          // Обновляем инструкции
-          stepTitle.textContent = "1. solis";
-          stepDescription.textContent =
-            "Novietojiet kolbu ar dzīvsudraba (II) tiocianātu uz keramiskā šķīvja";
+        // Обработчик для кнопки "Sākt vēlreiz"
+        restartButton.addEventListener("click", function () {
+          // Простое обновление страницы
+          window.location.reload();
         });
 
-        // Функция для обеспечения адаптивности
-        function handleResize() {
-          if (window.innerWidth <= 768) {
-            // Для мобильных устройств
-            document.querySelector(".info-panel").style.width = "90%";
-            document.querySelector(".instructions-panel").style.width = "90%";
-            document.querySelector(".ui-controls").style.width = "90%";
-          } else {
-            // Для ПК
-            document.querySelector(".info-panel").style.width = "350px";
-            document.querySelector(".instructions-panel").style.width = "350px";
-            document.querySelector(".ui-controls").style.width = "300px";
-          }
+        // Обработчик для кнопки "Pildīt testu"
+        testButton.addEventListener("click", function () {
+          // Переход на страницу теста
+          window.location.href = "test1.html";
+        });
+      });
+      // Функции для улучшения адаптивности на мобильных устройствах
+
+      // Добавляем классы для мобильного разрешения при загрузке и изменении размера окна
+      function setupMobileOptimizations() {
+        const isMobile = window.innerWidth <= 768;
+        const isSmallMobile = window.innerWidth <= 480;
+        const isLandscape = window.innerWidth > window.innerHeight;
+        const body = document.body;
+
+        // Добавляем классы для CSS
+        if (isMobile) {
+          body.classList.add("mobile-device");
+          if (isSmallMobile) body.classList.add("small-mobile");
+          if (isLandscape) body.classList.add("landscape");
+          else body.classList.remove("landscape");
+        } else {
+          body.classList.remove("mobile-device", "small-mobile", "landscape");
         }
 
-        // Вызываем функцию при загрузке и изменении размера окна
-        window.addEventListener("resize", handleResize);
-        handleResize();
+        // Настраиваем панели для текущего разрешения
+        adjustPanelPositions();
+      }
 
-        // Добавляем обработчик события загрузки 3D-моделей
-        document
-          .querySelector("a-scene")
-          .addEventListener("loaded", function () {
-            console.log("A-Frame scene loaded");
+      // Коррекция позиции панелей в зависимости от размера экрана
+      function adjustPanelPositions() {
+        const isMobile = window.innerWidth <= 768;
+        const isLandscape = window.innerWidth > window.innerHeight;
+
+        // Получаем ссылки на все панели
+        const panels = [
+          document.getElementById("instructions-panel"),
+          document.getElementById("step2-panel"),
+          document.getElementById("reaction-panel"),
+          document.getElementById("completion-panel"),
+          document.getElementById("info-panel"),
+        ].filter((panel) => panel !== null);
+
+        // Настраиваем каждую панель
+        panels.forEach((panel) => {
+          if (isMobile) {
+            if (isLandscape) {
+              // Ландшафтная ориентация
+              if (panel.id === "reaction-panel") {
+                panel.style.top = "80px";
+                panel.style.left = "auto";
+                panel.style.right = "20px";
+                panel.style.transform = "none";
+                panel.style.maxWidth = "40%";
+              } else if (
+                panel.id === "completion-panel" ||
+                panel.id === "instructions-panel" ||
+                panel.id === "step2-panel"
+              ) {
+                panel.style.bottom = "20px";
+                panel.style.left = "20px";
+                panel.style.transform = "none";
+                panel.style.maxWidth = "50%";
+              }
+            } else {
+              // Портретная ориентация
+              if (panel.id === "reaction-panel") {
+                panel.style.top = "80px";
+                panel.style.left = "50%";
+                panel.style.transform = "translateX(-50%)";
+                panel.style.maxWidth = "90%";
+              } else if (
+                panel.id === "completion-panel" ||
+                panel.id === "instructions-panel" ||
+                panel.id === "step2-panel"
+              ) {
+                panel.style.bottom = "80px";
+                panel.style.left = "50%";
+                panel.style.transform = "translateX(-50%)";
+                panel.style.maxWidth = "90%";
+              }
+            }
+          }
+        });
+      }
+
+      // Обеспечение видимости активной панели
+      function ensureVisiblePanel() {
+        // Находим активную панель
+        const visiblePanels = Array.from(
+          document.querySelectorAll(
+            ".instructions-panel, #reaction-panel, #completion-panel"
+          )
+        ).filter((panel) => window.getComputedStyle(panel).display !== "none");
+
+        if (visiblePanels.length > 0) {
+          const activePanel = visiblePanels[0];
+
+          // Проверяем, нужна ли прокрутка на мобильных устройствах
+          if (window.innerWidth <= 768) {
+            const rect = activePanel.getBoundingClientRect();
+            const isVisible =
+              rect.top >= 0 &&
+              rect.left >= 0 &&
+              rect.bottom <= window.innerHeight &&
+              rect.right <= window.innerWidth;
+
+            if (!isVisible) {
+              // Плавно прокручиваем к панели
+              activePanel.scrollIntoView({
+                behavior: "smooth",
+                block: "center",
+              });
+            }
+          }
+        }
+      }
+
+      // Улучшение отзывчивости кнопок на сенсорных устройствах
+      function enhanceTouchControls() {
+        const hasTouchScreen =
+          "ontouchstart" in window || navigator.maxTouchPoints > 0;
+
+        if (hasTouchScreen) {
+          // Увеличиваем размер кнопок
+          const buttons = document.querySelectorAll("button");
+          buttons.forEach((button) => {
+            button.classList.add("touch-button");
           });
-      });
+
+          // Добавляем активное состояние при нажатии
+          buttons.forEach((button) => {
+            button.addEventListener("touchstart", function () {
+              this.classList.add("touch-active");
+            });
+
+            button.addEventListener("touchend", function () {
+              this.classList.remove("touch-active");
+
+              // Добавляем небольшую задержку перед прокруткой к новой панели
+              setTimeout(ensureVisiblePanel, 300);
+            });
+          });
+        }
+      }
+
+      // Предотвращение проблем с масштабированием на iOS
+      function preventZoomOnIOS() {
+        document.addEventListener(
+          "touchmove",
+          function (event) {
+            if (event.scale !== 1) {
+              event.preventDefault();
+            }
+          },
+          { passive: false }
+        );
+
+        let lastTouchEnd = 0;
+        document.addEventListener(
+          "touchend",
+          function (event) {
+            const now = new Date().getTime();
+            if (now - lastTouchEnd <= 300) {
+              event.preventDefault();
+            }
+            lastTouchEnd = now;
+          },
+          false
+        );
+      }
+
+      // Инициализация всех функций для мобильных устройств
+      function initMobileOptimizations() {
+        setupMobileOptimizations();
+        enhanceTouchControls();
+        preventZoomOnIOS();
+
+        // Отслеживаем изменения размера экрана
+        window.addEventListener("resize", setupMobileOptimizations);
+        window.addEventListener("orientationchange", function () {
+          setTimeout(setupMobileOptimizations, 100); // Небольшая задержка для iOS
+        });
+
+        // Добавляем отложенную проверку видимости панелей после действий пользователя
+        const allButtons = document.querySelectorAll("button");
+        allButtons.forEach((button) => {
+          const originalClick = button.onclick;
+          button.onclick = function (e) {
+            if (originalClick) originalClick.call(this, e);
+            setTimeout(ensureVisiblePanel, 500);
+          };
+        });
+      }
+
+      // Вызываем функцию инициализации после загрузки страницы
+      document.addEventListener("DOMContentLoaded", initMobileOptimizations);
     </script>
   </body>
 </html>
